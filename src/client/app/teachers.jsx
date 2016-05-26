@@ -1,16 +1,21 @@
 import React from 'react';
 import {render} from 'react-dom';
-import {socket} from './index.jsx';
-
+import io from 'socket.io-client';
+// var socket = io.connect(window.location.host);
 
 export default React.createClass({
+	getInitialState: function() {
+		return({students: []})
+	},
 	_updateList: function(data){
-		console.log('updating')
 		var index = this.state.students.findIndex(function(student){
 			return student.studentName === data.value.studentName
 		});
 		var newState = update(this.state, {students: {[index] : {$merge: data.value}}})
 		this.setState(newState)
+	},
+	componentDidMount: function(){
+		var socket = io('/teacher')
 	},
 	render: function() {
 		return(

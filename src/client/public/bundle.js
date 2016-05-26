@@ -59,43 +59,32 @@
 
 	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.socket = undefined;
-	
 	var _react = __webpack_require__(/*! react */ 2);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
 	var _reactDom = __webpack_require__(/*! react-dom */ 39);
 	
-	var _socket = __webpack_require__(/*! socket.io-client */ 169);
-	
-	var _socket2 = _interopRequireDefault(_socket);
-	
-	var _student = __webpack_require__(/*! ./student.jsx */ 216);
+	var _student = __webpack_require__(/*! ./student.jsx */ 169);
 	
 	var _student2 = _interopRequireDefault(_student);
 	
-	var _reactAddonsUpdate = __webpack_require__(/*! react-addons-update */ 217);
+	var _reactAddonsUpdate = __webpack_require__(/*! react-addons-update */ 170);
 	
 	var _reactAddonsUpdate2 = _interopRequireDefault(_reactAddonsUpdate);
 	
-	var _teachers = __webpack_require__(/*! ./teachers.jsx */ 219);
+	var _teachers = __webpack_require__(/*! ./teachers.jsx */ 172);
 	
 	var _teachers2 = _interopRequireDefault(_teachers);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var socket = exports.socket = _socket2.default.connect(window.location.host);
+	// export const socket = io.connect(window.location.host);
+	// export const socket2 = io('/test')
 	
 	var App = _react2.default.createClass({
 		displayName: 'App',
 	
-		getInitialState: function getInitialState() {
-			return { students: [{ studentName: 'Shawn', data: false }, { studentName: 'notShawn', data: true }, { studentName: 'nohgfdhgtShawn', data: true }, { studentName: 'notSyyttyhawn', data: true }, { studentName: 'notShrrrrrawn', data: true }] };
-		},
 		teach: function teach() {
 			(0, _reactDom.render)(_react2.default.createElement(_teachers2.default, null), document.getElementById('app'));
 		},
@@ -145,6 +134,8 @@
 			);
 		}
 	});
+	// import io from 'socket.io-client';
+	
 	
 	(0, _reactDom.render)(_react2.default.createElement(App, null), document.getElementById('app'));
 
@@ -20919,6 +20910,297 @@
 
 /***/ },
 /* 169 */
+/*!************************************!*\
+  !*** ./src/client/app/student.jsx ***!
+  \************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 39);
+	
+	var _index = __webpack_require__(/*! ./index.jsx */ 1);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = _react2.default.createClass({
+		displayName: 'student',
+	
+		_needsHelp: function _needsHelp() {
+			if (this.props.data === true) {
+				return "Yes";
+			} else {
+				return "No";
+			}
+		},
+		_toggleHelp: function _toggleHelp() {
+			_index.socket.emit('toggleHelp', this.props.name, this.props.data);
+		},
+		render: function render() {
+			return _react2.default.createElement(
+				'div',
+				{ className: 'jumbotron' },
+				_react2.default.createElement(
+					'p',
+					null,
+					'Name: ',
+					this.props.name
+				),
+				_react2.default.createElement(
+					'p',
+					null,
+					'Needs Help: ',
+					this._needsHelp()
+				),
+				_react2.default.createElement(
+					'button',
+					{ onClick: this._toggleHelp },
+					'Toggle Help'
+				)
+			);
+		}
+	});
+	// import io from 'socket.io-client';
+	// const socket = io.connect(window.location.host);
+
+/***/ },
+/* 170 */
+/*!****************************************!*\
+  !*** ./~/react-addons-update/index.js ***!
+  \****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(/*! react/lib/update */ 171);
+
+/***/ },
+/* 171 */
+/*!*******************************!*\
+  !*** ./~/react/lib/update.js ***!
+  \*******************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule update
+	 */
+	
+	/* global hasOwnProperty:true */
+	
+	'use strict';
+	
+	var _assign = __webpack_require__(/*! object-assign */ 5);
+	
+	var keyOf = __webpack_require__(/*! fbjs/lib/keyOf */ 32);
+	var invariant = __webpack_require__(/*! fbjs/lib/invariant */ 8);
+	var hasOwnProperty = {}.hasOwnProperty;
+	
+	function shallowCopy(x) {
+	  if (Array.isArray(x)) {
+	    return x.concat();
+	  } else if (x && typeof x === 'object') {
+	    return _assign(new x.constructor(), x);
+	  } else {
+	    return x;
+	  }
+	}
+	
+	var COMMAND_PUSH = keyOf({ $push: null });
+	var COMMAND_UNSHIFT = keyOf({ $unshift: null });
+	var COMMAND_SPLICE = keyOf({ $splice: null });
+	var COMMAND_SET = keyOf({ $set: null });
+	var COMMAND_MERGE = keyOf({ $merge: null });
+	var COMMAND_APPLY = keyOf({ $apply: null });
+	
+	var ALL_COMMANDS_LIST = [COMMAND_PUSH, COMMAND_UNSHIFT, COMMAND_SPLICE, COMMAND_SET, COMMAND_MERGE, COMMAND_APPLY];
+	
+	var ALL_COMMANDS_SET = {};
+	
+	ALL_COMMANDS_LIST.forEach(function (command) {
+	  ALL_COMMANDS_SET[command] = true;
+	});
+	
+	function invariantArrayCase(value, spec, command) {
+	  !Array.isArray(value) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected target of %s to be an array; got %s.', command, value) : invariant(false) : void 0;
+	  var specValue = spec[command];
+	  !Array.isArray(specValue) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected spec of %s to be an array; got %s. ' + 'Did you forget to wrap your parameter in an array?', command, specValue) : invariant(false) : void 0;
+	}
+	
+	/**
+	 * Returns a updated shallow copy of an object without mutating the original.
+	 * See https://facebook.github.io/react/docs/update.html for details.
+	 */
+	function update(value, spec) {
+	  !(typeof spec === 'object') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): You provided a key path to update() that did not contain one ' + 'of %s. Did you forget to include {%s: ...}?', ALL_COMMANDS_LIST.join(', '), COMMAND_SET) : invariant(false) : void 0;
+	
+	  if (hasOwnProperty.call(spec, COMMAND_SET)) {
+	    !(Object.keys(spec).length === 1) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Cannot have more than one key in an object with %s', COMMAND_SET) : invariant(false) : void 0;
+	
+	    return spec[COMMAND_SET];
+	  }
+	
+	  var nextValue = shallowCopy(value);
+	
+	  if (hasOwnProperty.call(spec, COMMAND_MERGE)) {
+	    var mergeObj = spec[COMMAND_MERGE];
+	    !(mergeObj && typeof mergeObj === 'object') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): %s expects a spec of type \'object\'; got %s', COMMAND_MERGE, mergeObj) : invariant(false) : void 0;
+	    !(nextValue && typeof nextValue === 'object') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): %s expects a target of type \'object\'; got %s', COMMAND_MERGE, nextValue) : invariant(false) : void 0;
+	    _assign(nextValue, spec[COMMAND_MERGE]);
+	  }
+	
+	  if (hasOwnProperty.call(spec, COMMAND_PUSH)) {
+	    invariantArrayCase(value, spec, COMMAND_PUSH);
+	    spec[COMMAND_PUSH].forEach(function (item) {
+	      nextValue.push(item);
+	    });
+	  }
+	
+	  if (hasOwnProperty.call(spec, COMMAND_UNSHIFT)) {
+	    invariantArrayCase(value, spec, COMMAND_UNSHIFT);
+	    spec[COMMAND_UNSHIFT].forEach(function (item) {
+	      nextValue.unshift(item);
+	    });
+	  }
+	
+	  if (hasOwnProperty.call(spec, COMMAND_SPLICE)) {
+	    !Array.isArray(value) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Expected %s target to be an array; got %s', COMMAND_SPLICE, value) : invariant(false) : void 0;
+	    !Array.isArray(spec[COMMAND_SPLICE]) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected spec of %s to be an array of arrays; got %s. ' + 'Did you forget to wrap your parameters in an array?', COMMAND_SPLICE, spec[COMMAND_SPLICE]) : invariant(false) : void 0;
+	    spec[COMMAND_SPLICE].forEach(function (args) {
+	      !Array.isArray(args) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected spec of %s to be an array of arrays; got %s. ' + 'Did you forget to wrap your parameters in an array?', COMMAND_SPLICE, spec[COMMAND_SPLICE]) : invariant(false) : void 0;
+	      nextValue.splice.apply(nextValue, args);
+	    });
+	  }
+	
+	  if (hasOwnProperty.call(spec, COMMAND_APPLY)) {
+	    !(typeof spec[COMMAND_APPLY] === 'function') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected spec of %s to be a function; got %s.', COMMAND_APPLY, spec[COMMAND_APPLY]) : invariant(false) : void 0;
+	    nextValue = spec[COMMAND_APPLY](nextValue);
+	  }
+	
+	  for (var k in spec) {
+	    if (!(ALL_COMMANDS_SET.hasOwnProperty(k) && ALL_COMMANDS_SET[k])) {
+	      nextValue[k] = update(value[k], spec[k]);
+	    }
+	  }
+	
+	  return nextValue;
+	}
+	
+	module.exports = update;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./~/process/browser.js */ 4)))
+
+/***/ },
+/* 172 */
+/*!*************************************!*\
+  !*** ./src/client/app/teachers.jsx ***!
+  \*************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 39);
+	
+	var _socket = __webpack_require__(/*! socket.io-client */ 173);
+	
+	var _socket2 = _interopRequireDefault(_socket);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	
+	// var socket = io.connect(window.location.host);
+	
+	exports.default = _react2.default.createClass({
+		displayName: 'teachers',
+	
+		getInitialState: function getInitialState() {
+			return { students: [] };
+		},
+		_updateList: function _updateList(data) {
+			var index = this.state.students.findIndex(function (student) {
+				return student.studentName === data.value.studentName;
+			});
+			var newState = update(this.state, { students: _defineProperty({}, index, { $merge: data.value }) });
+			this.setState(newState);
+		},
+		componentDidMount: function componentDidMount() {
+			var socket = (0, _socket2.default)('/teacher');
+		},
+		render: function render() {
+			return _react2.default.createElement(
+				'div',
+				{ className: 'jumbotron' },
+				_react2.default.createElement(
+					'div',
+					{ className: 'container' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'row' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'col-sm-8 col-sm-offset-2' },
+							_react2.default.createElement(
+								'h2',
+								{ className: 'text-sm-center' },
+								'Students in need of Help'
+							)
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'row' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'col-sm-8 col-sm-offset-2 active-students' },
+							'})}'
+						)
+					),
+					_react2.default.createElement('hr', null),
+					_react2.default.createElement(
+						'div',
+						{ className: 'col-sm-8 col-sm-offset-2' },
+						_react2.default.createElement(
+							'h2',
+							{ className: 'text-sm-center' },
+							'Content Students'
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'row' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'col-sm-8 col-sm-offset-2 inactive-students' },
+							'})}'
+						)
+					)
+				)
+			);
+		}
+	});
+
+/***/ },
+/* 173 */
 /*!*****************************************!*\
   !*** ./~/socket.io-client/lib/index.js ***!
   \*****************************************/
@@ -20929,10 +21211,10 @@
 	 * Module dependencies.
 	 */
 	
-	var url = __webpack_require__(/*! ./url */ 170);
-	var parser = __webpack_require__(/*! socket.io-parser */ 175);
-	var Manager = __webpack_require__(/*! ./manager */ 183);
-	var debug = __webpack_require__(/*! debug */ 172)('socket.io-client');
+	var url = __webpack_require__(/*! ./url */ 174);
+	var parser = __webpack_require__(/*! socket.io-parser */ 179);
+	var Manager = __webpack_require__(/*! ./manager */ 187);
+	var debug = __webpack_require__(/*! debug */ 176)('socket.io-client');
 	
 	/**
 	 * Module exports.
@@ -21014,12 +21296,12 @@
 	 * @api public
 	 */
 	
-	exports.Manager = __webpack_require__(/*! ./manager */ 183);
-	exports.Socket = __webpack_require__(/*! ./socket */ 209);
+	exports.Manager = __webpack_require__(/*! ./manager */ 187);
+	exports.Socket = __webpack_require__(/*! ./socket */ 213);
 
 
 /***/ },
-/* 170 */
+/* 174 */
 /*!***************************************!*\
   !*** ./~/socket.io-client/lib/url.js ***!
   \***************************************/
@@ -21030,8 +21312,8 @@
 	 * Module dependencies.
 	 */
 	
-	var parseuri = __webpack_require__(/*! parseuri */ 171);
-	var debug = __webpack_require__(/*! debug */ 172)('socket.io-client:url');
+	var parseuri = __webpack_require__(/*! parseuri */ 175);
+	var debug = __webpack_require__(/*! debug */ 176)('socket.io-client:url');
 	
 	/**
 	 * Module exports.
@@ -21105,7 +21387,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 171 */
+/* 175 */
 /*!*****************************!*\
   !*** ./~/parseuri/index.js ***!
   \*****************************/
@@ -21153,7 +21435,7 @@
 
 
 /***/ },
-/* 172 */
+/* 176 */
 /*!****************************!*\
   !*** ./~/debug/browser.js ***!
   \****************************/
@@ -21166,7 +21448,7 @@
 	 * Expose `debug()` as the module.
 	 */
 	
-	exports = module.exports = __webpack_require__(/*! ./debug */ 173);
+	exports = module.exports = __webpack_require__(/*! ./debug */ 177);
 	exports.log = log;
 	exports.formatArgs = formatArgs;
 	exports.save = save;
@@ -21330,7 +21612,7 @@
 
 
 /***/ },
-/* 173 */
+/* 177 */
 /*!**************************!*\
   !*** ./~/debug/debug.js ***!
   \**************************/
@@ -21349,7 +21631,7 @@
 	exports.disable = disable;
 	exports.enable = enable;
 	exports.enabled = enabled;
-	exports.humanize = __webpack_require__(/*! ms */ 174);
+	exports.humanize = __webpack_require__(/*! ms */ 178);
 	
 	/**
 	 * The currently active debug mode names, and names to skip.
@@ -21536,7 +21818,7 @@
 
 
 /***/ },
-/* 174 */
+/* 178 */
 /*!***********************!*\
   !*** ./~/ms/index.js ***!
   \***********************/
@@ -21670,7 +21952,7 @@
 
 
 /***/ },
-/* 175 */
+/* 179 */
 /*!*************************************!*\
   !*** ./~/socket.io-parser/index.js ***!
   \*************************************/
@@ -21681,12 +21963,12 @@
 	 * Module dependencies.
 	 */
 	
-	var debug = __webpack_require__(/*! debug */ 172)('socket.io-parser');
-	var json = __webpack_require__(/*! json3 */ 176);
-	var isArray = __webpack_require__(/*! isarray */ 179);
-	var Emitter = __webpack_require__(/*! component-emitter */ 180);
-	var binary = __webpack_require__(/*! ./binary */ 181);
-	var isBuf = __webpack_require__(/*! ./is-buffer */ 182);
+	var debug = __webpack_require__(/*! debug */ 176)('socket.io-parser');
+	var json = __webpack_require__(/*! json3 */ 180);
+	var isArray = __webpack_require__(/*! isarray */ 183);
+	var Emitter = __webpack_require__(/*! component-emitter */ 184);
+	var binary = __webpack_require__(/*! ./binary */ 185);
+	var isBuf = __webpack_require__(/*! ./is-buffer */ 186);
 	
 	/**
 	 * Protocol version.
@@ -22079,7 +22361,7 @@
 
 
 /***/ },
-/* 176 */
+/* 180 */
 /*!*************************************************!*\
   !*** ./~/socket.io-parser/~/json3/lib/json3.js ***!
   \*************************************************/
@@ -22089,7 +22371,7 @@
 	;(function () {
 	  // Detect the `define` function exposed by asynchronous module loaders. The
 	  // strict `define` check is necessary for compatibility with `r.js`.
-	  var isLoader = "function" === "function" && __webpack_require__(/*! !webpack amd options */ 178);
+	  var isLoader = "function" === "function" && __webpack_require__(/*! !webpack amd options */ 182);
 	
 	  // A set of types used to distinguish objects from primitives.
 	  var objectTypes = {
@@ -22988,10 +23270,10 @@
 	  }
 	}).call(this);
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../../webpack/buildin/module.js */ 177)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../../webpack/buildin/module.js */ 181)(module), (function() { return this; }())))
 
 /***/ },
-/* 177 */
+/* 181 */
 /*!***********************************!*\
   !*** (webpack)/buildin/module.js ***!
   \***********************************/
@@ -23010,7 +23292,7 @@
 
 
 /***/ },
-/* 178 */
+/* 182 */
 /*!****************************************!*\
   !*** (webpack)/buildin/amd-options.js ***!
   \****************************************/
@@ -23021,7 +23303,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
-/* 179 */
+/* 183 */
 /*!****************************!*\
   !*** ./~/isarray/index.js ***!
   \****************************/
@@ -23033,7 +23315,7 @@
 
 
 /***/ },
-/* 180 */
+/* 184 */
 /*!**************************************!*\
   !*** ./~/component-emitter/index.js ***!
   \**************************************/
@@ -23206,7 +23488,7 @@
 
 
 /***/ },
-/* 181 */
+/* 185 */
 /*!**************************************!*\
   !*** ./~/socket.io-parser/binary.js ***!
   \**************************************/
@@ -23218,8 +23500,8 @@
 	 * Module requirements
 	 */
 	
-	var isArray = __webpack_require__(/*! isarray */ 179);
-	var isBuf = __webpack_require__(/*! ./is-buffer */ 182);
+	var isArray = __webpack_require__(/*! isarray */ 183);
+	var isBuf = __webpack_require__(/*! ./is-buffer */ 186);
 	
 	/**
 	 * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
@@ -23357,7 +23639,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 182 */
+/* 186 */
 /*!*****************************************!*\
   !*** ./~/socket.io-parser/is-buffer.js ***!
   \*****************************************/
@@ -23380,7 +23662,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 183 */
+/* 187 */
 /*!*******************************************!*\
   !*** ./~/socket.io-client/lib/manager.js ***!
   \*******************************************/
@@ -23391,15 +23673,15 @@
 	 * Module dependencies.
 	 */
 	
-	var eio = __webpack_require__(/*! engine.io-client */ 184);
-	var Socket = __webpack_require__(/*! ./socket */ 209);
-	var Emitter = __webpack_require__(/*! component-emitter */ 210);
-	var parser = __webpack_require__(/*! socket.io-parser */ 175);
-	var on = __webpack_require__(/*! ./on */ 212);
-	var bind = __webpack_require__(/*! component-bind */ 213);
-	var debug = __webpack_require__(/*! debug */ 172)('socket.io-client:manager');
-	var indexOf = __webpack_require__(/*! indexof */ 207);
-	var Backoff = __webpack_require__(/*! backo2 */ 215);
+	var eio = __webpack_require__(/*! engine.io-client */ 188);
+	var Socket = __webpack_require__(/*! ./socket */ 213);
+	var Emitter = __webpack_require__(/*! component-emitter */ 214);
+	var parser = __webpack_require__(/*! socket.io-parser */ 179);
+	var on = __webpack_require__(/*! ./on */ 216);
+	var bind = __webpack_require__(/*! component-bind */ 217);
+	var debug = __webpack_require__(/*! debug */ 176)('socket.io-client:manager');
+	var indexOf = __webpack_require__(/*! indexof */ 211);
+	var Backoff = __webpack_require__(/*! backo2 */ 219);
 	
 	/**
 	 * IE6+ hasOwnProperty
@@ -23946,25 +24228,25 @@
 
 
 /***/ },
-/* 184 */
+/* 188 */
 /*!*************************************!*\
   !*** ./~/engine.io-client/index.js ***!
   \*************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	module.exports =  __webpack_require__(/*! ./lib/ */ 185);
+	module.exports =  __webpack_require__(/*! ./lib/ */ 189);
 
 
 /***/ },
-/* 185 */
+/* 189 */
 /*!*****************************************!*\
   !*** ./~/engine.io-client/lib/index.js ***!
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	module.exports = __webpack_require__(/*! ./socket */ 186);
+	module.exports = __webpack_require__(/*! ./socket */ 190);
 	
 	/**
 	 * Exports parser
@@ -23972,11 +24254,11 @@
 	 * @api public
 	 *
 	 */
-	module.exports.parser = __webpack_require__(/*! engine.io-parser */ 193);
+	module.exports.parser = __webpack_require__(/*! engine.io-parser */ 197);
 
 
 /***/ },
-/* 186 */
+/* 190 */
 /*!******************************************!*\
   !*** ./~/engine.io-client/lib/socket.js ***!
   \******************************************/
@@ -23986,14 +24268,14 @@
 	 * Module dependencies.
 	 */
 	
-	var transports = __webpack_require__(/*! ./transports */ 187);
-	var Emitter = __webpack_require__(/*! component-emitter */ 180);
-	var debug = __webpack_require__(/*! debug */ 172)('engine.io-client:socket');
-	var index = __webpack_require__(/*! indexof */ 207);
-	var parser = __webpack_require__(/*! engine.io-parser */ 193);
-	var parseuri = __webpack_require__(/*! parseuri */ 171);
-	var parsejson = __webpack_require__(/*! parsejson */ 208);
-	var parseqs = __webpack_require__(/*! parseqs */ 201);
+	var transports = __webpack_require__(/*! ./transports */ 191);
+	var Emitter = __webpack_require__(/*! component-emitter */ 184);
+	var debug = __webpack_require__(/*! debug */ 176)('engine.io-client:socket');
+	var index = __webpack_require__(/*! indexof */ 211);
+	var parser = __webpack_require__(/*! engine.io-parser */ 197);
+	var parseuri = __webpack_require__(/*! parseuri */ 175);
+	var parsejson = __webpack_require__(/*! parsejson */ 212);
+	var parseqs = __webpack_require__(/*! parseqs */ 205);
 	
 	/**
 	 * Module exports.
@@ -24117,9 +24399,9 @@
 	 */
 	
 	Socket.Socket = Socket;
-	Socket.Transport = __webpack_require__(/*! ./transport */ 192);
-	Socket.transports = __webpack_require__(/*! ./transports */ 187);
-	Socket.parser = __webpack_require__(/*! engine.io-parser */ 193);
+	Socket.Transport = __webpack_require__(/*! ./transport */ 196);
+	Socket.transports = __webpack_require__(/*! ./transports */ 191);
+	Socket.parser = __webpack_require__(/*! engine.io-parser */ 197);
 	
 	/**
 	 * Creates transport of the given type.
@@ -24714,7 +24996,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 187 */
+/* 191 */
 /*!****************************************************!*\
   !*** ./~/engine.io-client/lib/transports/index.js ***!
   \****************************************************/
@@ -24724,10 +25006,10 @@
 	 * Module dependencies
 	 */
 	
-	var XMLHttpRequest = __webpack_require__(/*! xmlhttprequest-ssl */ 188);
-	var XHR = __webpack_require__(/*! ./polling-xhr */ 190);
-	var JSONP = __webpack_require__(/*! ./polling-jsonp */ 204);
-	var websocket = __webpack_require__(/*! ./websocket */ 205);
+	var XMLHttpRequest = __webpack_require__(/*! xmlhttprequest-ssl */ 192);
+	var XHR = __webpack_require__(/*! ./polling-xhr */ 194);
+	var JSONP = __webpack_require__(/*! ./polling-jsonp */ 208);
+	var websocket = __webpack_require__(/*! ./websocket */ 209);
 	
 	/**
 	 * Export transports.
@@ -24777,14 +25059,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 188 */
+/* 192 */
 /*!**************************************************!*\
   !*** ./~/engine.io-client/lib/xmlhttprequest.js ***!
   \**************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	// browser shim for xmlhttprequest module
-	var hasCORS = __webpack_require__(/*! has-cors */ 189);
+	var hasCORS = __webpack_require__(/*! has-cors */ 193);
 	
 	module.exports = function(opts) {
 	  var xdomain = opts.xdomain;
@@ -24822,7 +25104,7 @@
 
 
 /***/ },
-/* 189 */
+/* 193 */
 /*!*****************************!*\
   !*** ./~/has-cors/index.js ***!
   \*****************************/
@@ -24848,7 +25130,7 @@
 
 
 /***/ },
-/* 190 */
+/* 194 */
 /*!**********************************************************!*\
   !*** ./~/engine.io-client/lib/transports/polling-xhr.js ***!
   \**********************************************************/
@@ -24858,11 +25140,11 @@
 	 * Module requirements.
 	 */
 	
-	var XMLHttpRequest = __webpack_require__(/*! xmlhttprequest-ssl */ 188);
-	var Polling = __webpack_require__(/*! ./polling */ 191);
-	var Emitter = __webpack_require__(/*! component-emitter */ 180);
-	var inherit = __webpack_require__(/*! component-inherit */ 202);
-	var debug = __webpack_require__(/*! debug */ 172)('engine.io-client:polling-xhr');
+	var XMLHttpRequest = __webpack_require__(/*! xmlhttprequest-ssl */ 192);
+	var Polling = __webpack_require__(/*! ./polling */ 195);
+	var Emitter = __webpack_require__(/*! component-emitter */ 184);
+	var inherit = __webpack_require__(/*! component-inherit */ 206);
+	var debug = __webpack_require__(/*! debug */ 176)('engine.io-client:polling-xhr');
 	
 	/**
 	 * Module exports.
@@ -25270,7 +25552,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 191 */
+/* 195 */
 /*!******************************************************!*\
   !*** ./~/engine.io-client/lib/transports/polling.js ***!
   \******************************************************/
@@ -25280,12 +25562,12 @@
 	 * Module dependencies.
 	 */
 	
-	var Transport = __webpack_require__(/*! ../transport */ 192);
-	var parseqs = __webpack_require__(/*! parseqs */ 201);
-	var parser = __webpack_require__(/*! engine.io-parser */ 193);
-	var inherit = __webpack_require__(/*! component-inherit */ 202);
-	var yeast = __webpack_require__(/*! yeast */ 203);
-	var debug = __webpack_require__(/*! debug */ 172)('engine.io-client:polling');
+	var Transport = __webpack_require__(/*! ../transport */ 196);
+	var parseqs = __webpack_require__(/*! parseqs */ 205);
+	var parser = __webpack_require__(/*! engine.io-parser */ 197);
+	var inherit = __webpack_require__(/*! component-inherit */ 206);
+	var yeast = __webpack_require__(/*! yeast */ 207);
+	var debug = __webpack_require__(/*! debug */ 176)('engine.io-client:polling');
 	
 	/**
 	 * Module exports.
@@ -25298,7 +25580,7 @@
 	 */
 	
 	var hasXHR2 = (function() {
-	  var XMLHttpRequest = __webpack_require__(/*! xmlhttprequest-ssl */ 188);
+	  var XMLHttpRequest = __webpack_require__(/*! xmlhttprequest-ssl */ 192);
 	  var xhr = new XMLHttpRequest({ xdomain: false });
 	  return null != xhr.responseType;
 	})();
@@ -25526,7 +25808,7 @@
 
 
 /***/ },
-/* 192 */
+/* 196 */
 /*!*********************************************!*\
   !*** ./~/engine.io-client/lib/transport.js ***!
   \*********************************************/
@@ -25536,8 +25818,8 @@
 	 * Module dependencies.
 	 */
 	
-	var parser = __webpack_require__(/*! engine.io-parser */ 193);
-	var Emitter = __webpack_require__(/*! component-emitter */ 180);
+	var parser = __webpack_require__(/*! engine.io-parser */ 197);
+	var Emitter = __webpack_require__(/*! component-emitter */ 184);
 	
 	/**
 	 * Module exports.
@@ -25690,7 +25972,7 @@
 
 
 /***/ },
-/* 193 */
+/* 197 */
 /*!*******************************************!*\
   !*** ./~/engine.io-parser/lib/browser.js ***!
   \*******************************************/
@@ -25700,12 +25982,12 @@
 	 * Module dependencies.
 	 */
 	
-	var keys = __webpack_require__(/*! ./keys */ 194);
-	var hasBinary = __webpack_require__(/*! has-binary */ 195);
-	var sliceBuffer = __webpack_require__(/*! arraybuffer.slice */ 196);
-	var base64encoder = __webpack_require__(/*! base64-arraybuffer */ 197);
-	var after = __webpack_require__(/*! after */ 198);
-	var utf8 = __webpack_require__(/*! utf8 */ 199);
+	var keys = __webpack_require__(/*! ./keys */ 198);
+	var hasBinary = __webpack_require__(/*! has-binary */ 199);
+	var sliceBuffer = __webpack_require__(/*! arraybuffer.slice */ 200);
+	var base64encoder = __webpack_require__(/*! base64-arraybuffer */ 201);
+	var after = __webpack_require__(/*! after */ 202);
+	var utf8 = __webpack_require__(/*! utf8 */ 203);
 	
 	/**
 	 * Check if we are running an android browser. That requires us to use
@@ -25762,7 +26044,7 @@
 	 * Create a blob api even for blob builder when vendor prefixes exist
 	 */
 	
-	var Blob = __webpack_require__(/*! blob */ 200);
+	var Blob = __webpack_require__(/*! blob */ 204);
 	
 	/**
 	 * Encodes a packet.
@@ -26294,7 +26576,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 194 */
+/* 198 */
 /*!****************************************!*\
   !*** ./~/engine.io-parser/lib/keys.js ***!
   \****************************************/
@@ -26322,7 +26604,7 @@
 
 
 /***/ },
-/* 195 */
+/* 199 */
 /*!**************************************************!*\
   !*** ./~/engine.io-parser/~/has-binary/index.js ***!
   \**************************************************/
@@ -26333,7 +26615,7 @@
 	 * Module requirements.
 	 */
 	
-	var isArray = __webpack_require__(/*! isarray */ 179);
+	var isArray = __webpack_require__(/*! isarray */ 183);
 	
 	/**
 	 * Module exports.
@@ -26390,7 +26672,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 196 */
+/* 200 */
 /*!**************************************!*\
   !*** ./~/arraybuffer.slice/index.js ***!
   \**************************************/
@@ -26428,7 +26710,7 @@
 
 
 /***/ },
-/* 197 */
+/* 201 */
 /*!********************************************************!*\
   !*** ./~/base64-arraybuffer/lib/base64-arraybuffer.js ***!
   \********************************************************/
@@ -26496,7 +26778,7 @@
 
 
 /***/ },
-/* 198 */
+/* 202 */
 /*!**************************!*\
   !*** ./~/after/index.js ***!
   \**************************/
@@ -26533,7 +26815,7 @@
 
 
 /***/ },
-/* 199 */
+/* 203 */
 /*!************************!*\
   !*** ./~/utf8/utf8.js ***!
   \************************/
@@ -26782,10 +27064,10 @@
 	
 	}(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../webpack/buildin/module.js */ 177)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../webpack/buildin/module.js */ 181)(module), (function() { return this; }())))
 
 /***/ },
-/* 200 */
+/* 204 */
 /*!*************************!*\
   !*** ./~/blob/index.js ***!
   \*************************/
@@ -26891,7 +27173,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 201 */
+/* 205 */
 /*!****************************!*\
   !*** ./~/parseqs/index.js ***!
   \****************************/
@@ -26937,7 +27219,7 @@
 
 
 /***/ },
-/* 202 */
+/* 206 */
 /*!**************************************!*\
   !*** ./~/component-inherit/index.js ***!
   \**************************************/
@@ -26952,7 +27234,7 @@
 	};
 
 /***/ },
-/* 203 */
+/* 207 */
 /*!**************************!*\
   !*** ./~/yeast/index.js ***!
   \**************************/
@@ -27029,7 +27311,7 @@
 
 
 /***/ },
-/* 204 */
+/* 208 */
 /*!************************************************************!*\
   !*** ./~/engine.io-client/lib/transports/polling-jsonp.js ***!
   \************************************************************/
@@ -27040,8 +27322,8 @@
 	 * Module requirements.
 	 */
 	
-	var Polling = __webpack_require__(/*! ./polling */ 191);
-	var inherit = __webpack_require__(/*! component-inherit */ 202);
+	var Polling = __webpack_require__(/*! ./polling */ 195);
+	var inherit = __webpack_require__(/*! component-inherit */ 206);
 	
 	/**
 	 * Module exports.
@@ -27277,7 +27559,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 205 */
+/* 209 */
 /*!********************************************************!*\
   !*** ./~/engine.io-client/lib/transports/websocket.js ***!
   \********************************************************/
@@ -27287,12 +27569,12 @@
 	 * Module dependencies.
 	 */
 	
-	var Transport = __webpack_require__(/*! ../transport */ 192);
-	var parser = __webpack_require__(/*! engine.io-parser */ 193);
-	var parseqs = __webpack_require__(/*! parseqs */ 201);
-	var inherit = __webpack_require__(/*! component-inherit */ 202);
-	var yeast = __webpack_require__(/*! yeast */ 203);
-	var debug = __webpack_require__(/*! debug */ 172)('engine.io-client:websocket');
+	var Transport = __webpack_require__(/*! ../transport */ 196);
+	var parser = __webpack_require__(/*! engine.io-parser */ 197);
+	var parseqs = __webpack_require__(/*! parseqs */ 205);
+	var inherit = __webpack_require__(/*! component-inherit */ 206);
+	var yeast = __webpack_require__(/*! yeast */ 207);
+	var debug = __webpack_require__(/*! debug */ 176)('engine.io-client:websocket');
 	var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 	
 	/**
@@ -27304,7 +27586,7 @@
 	var WebSocket = BrowserWebSocket;
 	if (!WebSocket && typeof window === 'undefined') {
 	  try {
-	    WebSocket = __webpack_require__(/*! ws */ 206);
+	    WebSocket = __webpack_require__(/*! ws */ 210);
 	  } catch (e) { }
 	}
 	
@@ -27575,7 +27857,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 206 */
+/* 210 */
 /*!********************!*\
   !*** ws (ignored) ***!
   \********************/
@@ -27584,7 +27866,7 @@
 	/* (ignored) */
 
 /***/ },
-/* 207 */
+/* 211 */
 /*!****************************!*\
   !*** ./~/indexof/index.js ***!
   \****************************/
@@ -27602,7 +27884,7 @@
 	};
 
 /***/ },
-/* 208 */
+/* 212 */
 /*!******************************!*\
   !*** ./~/parsejson/index.js ***!
   \******************************/
@@ -27643,7 +27925,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 209 */
+/* 213 */
 /*!******************************************!*\
   !*** ./~/socket.io-client/lib/socket.js ***!
   \******************************************/
@@ -27654,13 +27936,13 @@
 	 * Module dependencies.
 	 */
 	
-	var parser = __webpack_require__(/*! socket.io-parser */ 175);
-	var Emitter = __webpack_require__(/*! component-emitter */ 210);
-	var toArray = __webpack_require__(/*! to-array */ 211);
-	var on = __webpack_require__(/*! ./on */ 212);
-	var bind = __webpack_require__(/*! component-bind */ 213);
-	var debug = __webpack_require__(/*! debug */ 172)('socket.io-client:socket');
-	var hasBin = __webpack_require__(/*! has-binary */ 214);
+	var parser = __webpack_require__(/*! socket.io-parser */ 179);
+	var Emitter = __webpack_require__(/*! component-emitter */ 214);
+	var toArray = __webpack_require__(/*! to-array */ 215);
+	var on = __webpack_require__(/*! ./on */ 216);
+	var bind = __webpack_require__(/*! component-bind */ 217);
+	var debug = __webpack_require__(/*! debug */ 176)('socket.io-client:socket');
+	var hasBin = __webpack_require__(/*! has-binary */ 218);
 	
 	/**
 	 * Module exports.
@@ -28064,7 +28346,7 @@
 
 
 /***/ },
-/* 210 */
+/* 214 */
 /*!*********************************************************!*\
   !*** ./~/socket.io-client/~/component-emitter/index.js ***!
   \*********************************************************/
@@ -28234,7 +28516,7 @@
 
 
 /***/ },
-/* 211 */
+/* 215 */
 /*!*****************************!*\
   !*** ./~/to-array/index.js ***!
   \*****************************/
@@ -28256,7 +28538,7 @@
 
 
 /***/ },
-/* 212 */
+/* 216 */
 /*!**************************************!*\
   !*** ./~/socket.io-client/lib/on.js ***!
   \**************************************/
@@ -28289,7 +28571,7 @@
 
 
 /***/ },
-/* 213 */
+/* 217 */
 /*!***********************************!*\
   !*** ./~/component-bind/index.js ***!
   \***********************************/
@@ -28321,7 +28603,7 @@
 
 
 /***/ },
-/* 214 */
+/* 218 */
 /*!*******************************!*\
   !*** ./~/has-binary/index.js ***!
   \*******************************/
@@ -28332,7 +28614,7 @@
 	 * Module requirements.
 	 */
 	
-	var isArray = __webpack_require__(/*! isarray */ 179);
+	var isArray = __webpack_require__(/*! isarray */ 183);
 	
 	/**
 	 * Module exports.
@@ -28390,7 +28672,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 215 */
+/* 219 */
 /*!***************************!*\
   !*** ./~/backo2/index.js ***!
   \***************************/
@@ -28482,288 +28764,6 @@
 	};
 	
 
-
-/***/ },
-/* 216 */
-/*!************************************!*\
-  !*** ./src/client/app/student.jsx ***!
-  \************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _react = __webpack_require__(/*! react */ 2);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 39);
-	
-	var _index = __webpack_require__(/*! ./index.jsx */ 1);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.default = _react2.default.createClass({
-		displayName: 'student',
-	
-		_needsHelp: function _needsHelp() {
-			if (this.props.data === true) {
-				return "Yes";
-			} else {
-				return "No";
-			}
-		},
-		_toggleHelp: function _toggleHelp() {
-			_index.socket.emit('toggleHelp', this.props.name, this.props.data);
-		},
-		render: function render() {
-			return _react2.default.createElement(
-				'div',
-				{ className: 'jumbotron' },
-				_react2.default.createElement(
-					'p',
-					null,
-					'Name: ',
-					this.props.name
-				),
-				_react2.default.createElement(
-					'p',
-					null,
-					'Needs Help: ',
-					this._needsHelp()
-				),
-				_react2.default.createElement(
-					'button',
-					{ onClick: this._toggleHelp },
-					'Toggle Help'
-				)
-			);
-		}
-	});
-	// import io from 'socket.io-client';
-	// const socket = io.connect(window.location.host);
-
-/***/ },
-/* 217 */
-/*!****************************************!*\
-  !*** ./~/react-addons-update/index.js ***!
-  \****************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(/*! react/lib/update */ 218);
-
-/***/ },
-/* 218 */
-/*!*******************************!*\
-  !*** ./~/react/lib/update.js ***!
-  \*******************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule update
-	 */
-	
-	/* global hasOwnProperty:true */
-	
-	'use strict';
-	
-	var _assign = __webpack_require__(/*! object-assign */ 5);
-	
-	var keyOf = __webpack_require__(/*! fbjs/lib/keyOf */ 32);
-	var invariant = __webpack_require__(/*! fbjs/lib/invariant */ 8);
-	var hasOwnProperty = {}.hasOwnProperty;
-	
-	function shallowCopy(x) {
-	  if (Array.isArray(x)) {
-	    return x.concat();
-	  } else if (x && typeof x === 'object') {
-	    return _assign(new x.constructor(), x);
-	  } else {
-	    return x;
-	  }
-	}
-	
-	var COMMAND_PUSH = keyOf({ $push: null });
-	var COMMAND_UNSHIFT = keyOf({ $unshift: null });
-	var COMMAND_SPLICE = keyOf({ $splice: null });
-	var COMMAND_SET = keyOf({ $set: null });
-	var COMMAND_MERGE = keyOf({ $merge: null });
-	var COMMAND_APPLY = keyOf({ $apply: null });
-	
-	var ALL_COMMANDS_LIST = [COMMAND_PUSH, COMMAND_UNSHIFT, COMMAND_SPLICE, COMMAND_SET, COMMAND_MERGE, COMMAND_APPLY];
-	
-	var ALL_COMMANDS_SET = {};
-	
-	ALL_COMMANDS_LIST.forEach(function (command) {
-	  ALL_COMMANDS_SET[command] = true;
-	});
-	
-	function invariantArrayCase(value, spec, command) {
-	  !Array.isArray(value) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected target of %s to be an array; got %s.', command, value) : invariant(false) : void 0;
-	  var specValue = spec[command];
-	  !Array.isArray(specValue) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected spec of %s to be an array; got %s. ' + 'Did you forget to wrap your parameter in an array?', command, specValue) : invariant(false) : void 0;
-	}
-	
-	/**
-	 * Returns a updated shallow copy of an object without mutating the original.
-	 * See https://facebook.github.io/react/docs/update.html for details.
-	 */
-	function update(value, spec) {
-	  !(typeof spec === 'object') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): You provided a key path to update() that did not contain one ' + 'of %s. Did you forget to include {%s: ...}?', ALL_COMMANDS_LIST.join(', '), COMMAND_SET) : invariant(false) : void 0;
-	
-	  if (hasOwnProperty.call(spec, COMMAND_SET)) {
-	    !(Object.keys(spec).length === 1) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Cannot have more than one key in an object with %s', COMMAND_SET) : invariant(false) : void 0;
-	
-	    return spec[COMMAND_SET];
-	  }
-	
-	  var nextValue = shallowCopy(value);
-	
-	  if (hasOwnProperty.call(spec, COMMAND_MERGE)) {
-	    var mergeObj = spec[COMMAND_MERGE];
-	    !(mergeObj && typeof mergeObj === 'object') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): %s expects a spec of type \'object\'; got %s', COMMAND_MERGE, mergeObj) : invariant(false) : void 0;
-	    !(nextValue && typeof nextValue === 'object') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): %s expects a target of type \'object\'; got %s', COMMAND_MERGE, nextValue) : invariant(false) : void 0;
-	    _assign(nextValue, spec[COMMAND_MERGE]);
-	  }
-	
-	  if (hasOwnProperty.call(spec, COMMAND_PUSH)) {
-	    invariantArrayCase(value, spec, COMMAND_PUSH);
-	    spec[COMMAND_PUSH].forEach(function (item) {
-	      nextValue.push(item);
-	    });
-	  }
-	
-	  if (hasOwnProperty.call(spec, COMMAND_UNSHIFT)) {
-	    invariantArrayCase(value, spec, COMMAND_UNSHIFT);
-	    spec[COMMAND_UNSHIFT].forEach(function (item) {
-	      nextValue.unshift(item);
-	    });
-	  }
-	
-	  if (hasOwnProperty.call(spec, COMMAND_SPLICE)) {
-	    !Array.isArray(value) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Expected %s target to be an array; got %s', COMMAND_SPLICE, value) : invariant(false) : void 0;
-	    !Array.isArray(spec[COMMAND_SPLICE]) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected spec of %s to be an array of arrays; got %s. ' + 'Did you forget to wrap your parameters in an array?', COMMAND_SPLICE, spec[COMMAND_SPLICE]) : invariant(false) : void 0;
-	    spec[COMMAND_SPLICE].forEach(function (args) {
-	      !Array.isArray(args) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected spec of %s to be an array of arrays; got %s. ' + 'Did you forget to wrap your parameters in an array?', COMMAND_SPLICE, spec[COMMAND_SPLICE]) : invariant(false) : void 0;
-	      nextValue.splice.apply(nextValue, args);
-	    });
-	  }
-	
-	  if (hasOwnProperty.call(spec, COMMAND_APPLY)) {
-	    !(typeof spec[COMMAND_APPLY] === 'function') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected spec of %s to be a function; got %s.', COMMAND_APPLY, spec[COMMAND_APPLY]) : invariant(false) : void 0;
-	    nextValue = spec[COMMAND_APPLY](nextValue);
-	  }
-	
-	  for (var k in spec) {
-	    if (!(ALL_COMMANDS_SET.hasOwnProperty(k) && ALL_COMMANDS_SET[k])) {
-	      nextValue[k] = update(value[k], spec[k]);
-	    }
-	  }
-	
-	  return nextValue;
-	}
-	
-	module.exports = update;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./~/process/browser.js */ 4)))
-
-/***/ },
-/* 219 */
-/*!*************************************!*\
-  !*** ./src/client/app/teachers.jsx ***!
-  \*************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _react = __webpack_require__(/*! react */ 2);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 39);
-	
-	var _index = __webpack_require__(/*! ./index.jsx */ 1);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	
-	exports.default = _react2.default.createClass({
-		displayName: 'teachers',
-	
-		_updateList: function _updateList(data) {
-			console.log('updating');
-			var index = this.state.students.findIndex(function (student) {
-				return student.studentName === data.value.studentName;
-			});
-			var newState = update(this.state, { students: _defineProperty({}, index, { $merge: data.value }) });
-			this.setState(newState);
-		},
-		render: function render() {
-			return _react2.default.createElement(
-				'div',
-				{ className: 'jumbotron' },
-				_react2.default.createElement(
-					'div',
-					{ className: 'container' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'row' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-sm-8 col-sm-offset-2' },
-							_react2.default.createElement(
-								'h2',
-								{ className: 'text-sm-center' },
-								'Students in need of Help'
-							)
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'row' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-sm-8 col-sm-offset-2 active-students' },
-							'})}'
-						)
-					),
-					_react2.default.createElement('hr', null),
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-8 col-sm-offset-2' },
-						_react2.default.createElement(
-							'h2',
-							{ className: 'text-sm-center' },
-							'Content Students'
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'row' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-sm-8 col-sm-offset-2 inactive-students' },
-							'})}'
-						)
-					)
-				)
-			);
-		}
-	});
 
 /***/ }
 /******/ ]);

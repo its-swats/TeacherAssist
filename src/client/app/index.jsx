@@ -1,14 +1,18 @@
 import React from 'react';
 import {render} from 'react-dom';
 // import io from 'socket.io-client';
-import Student from './student.jsx';
-import Teacher from './teachers.jsx';
+// import Student from './student.jsx';
+import TeacherPanel from './teachers.jsx';
+import StudentPanel from './students.jsx';
 // export const socket = io.connect(window.location.host);
 // export const socket2 = io('/test')
 
 var App = React.createClass({
-	teach: function() {
-		render(<Teacher />, document.getElementById('app'))
+	teacher: function() {
+		render(<TeacherPanel />, document.getElementById('app'));
+	},
+	student: function() {
+		render(<StudentPanel />, document.getElementById('app'));
 	},
 	render: function() {
 		return(
@@ -21,10 +25,10 @@ var App = React.createClass({
 				</div>
 				<div className='row'>
 					<div className='col-sm-4 col-sm-offset-2 select-box'>
-						<button onClick={this.teach}className="btn btn-primary btn-lg btn-block">Teacher</button>
+						<button onClick={this.teacher}className="btn btn-primary btn-lg btn-block">Teacher</button>
 					</div>
 					<div className='col-sm-4 select-box'>
-						<button className="btn btn-primary btn-lg btn-block">Student</button>
+						<button onClick={this.student}className="btn btn-primary btn-lg btn-block">Student</button>
 					</div>
 				</div>
 			</div>

@@ -35,7 +35,7 @@ export default React.createClass({
 					<div className='col-sm-8 col-sm-offset-2 active-students'>
 						{this.state.students.map(function(student){
 							if (student.needsHelp === true) {
-								return(<Student key={student.id} name={student.name} data={true} />)
+								return(<Student key={student.id} name={student.name} needsHelp={true} />)
 							}
 						})}
 					</div>
@@ -48,7 +48,7 @@ export default React.createClass({
 					<div className='col-sm-8 col-sm-offset-2 inactive-students'>
 						{this.state.students.map(function(student){
 							if (student.needsHelp === false) {
-								return(<Student key={student.id} name={student.name} data={false} />)
+								return(<Student key={student.id} name={student.name} needsHelp={false} />)
 							}
 						})}
 					</div>

@@ -19,3 +19,20 @@ body {
 	transform: translateY(-50%);
 	width: 100%;
 }
+
+.student-card {
+	/*margin-left: 1px;*/
+	/*margin-right: 1px;*/
+	margin-bottom: 1em;
+	
+	/*margin-bottom: 1em;*/
+	padding-top: 2em;
+	padding-bottom: 2em;
+	outline: 1px solid black
+
+}
+
+.inactive-students {
+	padding-left: 1em;
+	padding-right: 1em;
+}

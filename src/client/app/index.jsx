@@ -2,7 +2,6 @@ import React from 'react';
 import {render} from 'react-dom';
 // import io from 'socket.io-client';
 import Student from './student.jsx';
-import update from 'react-addons-update';
 import Teacher from './teachers.jsx';
 // export const socket = io.connect(window.location.host);
 // export const socket2 = io('/test')

@@ -6,7 +6,11 @@ var attachSocket = function(io, activeConnections){
 
   teacher.on('connection', function(socket){
     console.log('A teacher connected')
-  })
+    r.table('students').run().then(function(result){
+      console.log('hit')
+      teacher.emit('updateStudents', result);
+    });
+  });
 
   student.on('connection', function(socket){
     console.log('A student connected')

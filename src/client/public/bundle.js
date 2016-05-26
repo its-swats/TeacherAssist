@@ -69,10 +69,6 @@
 	
 	var _student2 = _interopRequireDefault(_student);
 	
-	var _reactAddonsUpdate = __webpack_require__(/*! react-addons-update */ 170);
-	
-	var _reactAddonsUpdate2 = _interopRequireDefault(_reactAddonsUpdate);
-	
 	var _teachers = __webpack_require__(/*! ./teachers.jsx */ 172);
 	
 	var _teachers2 = _interopRequireDefault(_teachers);
@@ -82,6 +78,7 @@
 	// export const socket = io.connect(window.location.host);
 	// export const socket2 = io('/test')
 	
+	// import io from 'socket.io-client';
 	var App = _react2.default.createClass({
 		displayName: 'App',
 	
@@ -134,8 +131,6 @@
 			);
 		}
 	});
-	// import io from 'socket.io-client';
-	
 	
 	(0, _reactDom.render)(_react2.default.createElement(App, null), document.getElementById('app'));
 
@@ -20934,36 +20929,17 @@
 	exports.default = _react2.default.createClass({
 		displayName: 'student',
 	
-		_needsHelp: function _needsHelp() {
-			if (this.props.data === true) {
-				return "Yes";
-			} else {
-				return "No";
-			}
-		},
 		_toggleHelp: function _toggleHelp() {
 			_index.socket.emit('toggleHelp', this.props.name, this.props.data);
 		},
 		render: function render() {
 			return _react2.default.createElement(
 				'div',
-				{ className: 'jumbotron' },
+				{ className: 'col-sm-3 student-card' },
 				_react2.default.createElement(
-					'p',
-					null,
-					'Name: ',
+					'h5',
+					{ className: 'text-sm-center' },
 					this.props.name
-				),
-				_react2.default.createElement(
-					'p',
-					null,
-					'Needs Help: ',
-					this._needsHelp()
-				),
-				_react2.default.createElement(
-					'button',
-					{ onClick: this._toggleHelp },
-					'Toggle Help'
 				)
 			);
 		}
@@ -21124,9 +21100,15 @@
 	
 	var _socket2 = _interopRequireDefault(_socket);
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _student = __webpack_require__(/*! ./student.jsx */ 169);
 	
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	var _student2 = _interopRequireDefault(_student);
+	
+	var _reactAddonsUpdate = __webpack_require__(/*! react-addons-update */ 170);
+	
+	var _reactAddonsUpdate2 = _interopRequireDefault(_reactAddonsUpdate);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// var socket = io.connect(window.location.host);
 	
@@ -21136,15 +21118,18 @@
 		getInitialState: function getInitialState() {
 			return { students: [] };
 		},
-		_updateList: function _updateList(data) {
-			var index = this.state.students.findIndex(function (student) {
-				return student.studentName === data.value.studentName;
-			});
-			var newState = update(this.state, { students: _defineProperty({}, index, { $merge: data.value }) });
-			this.setState(newState);
+		_updateStudents: function _updateStudents(data) {
+			console.log(data);
+			this.setState({ students: data });
+			// var index = this.state.students.findIndex(function(student){
+			// 	return student.studentName === data.value.studentName
+			// });
+			// var newState = update(this.state, {students: {[index] : {$merge: data.value}}})
+			// this.setState(newState)
 		},
 		componentDidMount: function componentDidMount() {
 			var socket = (0, _socket2.default)('/teacher');
+			socket.on('updateStudents', this._updateStudents);
 		},
 		render: function render() {
 			return _react2.default.createElement(
@@ -21172,7 +21157,11 @@
 						_react2.default.createElement(
 							'div',
 							{ className: 'col-sm-8 col-sm-offset-2 active-students' },
-							'})}'
+							this.state.students.map(function (student) {
+								if (student.needsHelp === true) {
+									return _react2.default.createElement(_student2.default, { key: student.id, name: student.name, data: true });
+								}
+							})
 						)
 					),
 					_react2.default.createElement('hr', null),
@@ -21191,7 +21180,11 @@
 						_react2.default.createElement(
 							'div',
 							{ className: 'col-sm-8 col-sm-offset-2 inactive-students' },
-							'})}'
+							this.state.students.map(function (student) {
+								if (student.needsHelp === false) {
+									return _react2.default.createElement(_student2.default, { key: student.id, name: student.name, data: false });
+								}
+							})
 						)
 					)
 				)

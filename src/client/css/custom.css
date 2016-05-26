@@ -1,0 +1,21 @@
+body {
+	background-color: #5BC0DE;
+	position: relative;
+	height: 100vh;
+}
+
+.active-students,
+.inactive-students,
+.select-box {
+	padding-top: 5em;
+	padding-bottom: 5em;
+	background-color: orange;
+	outline: 2px solid black;
+}
+
+.content {  
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 100%;
+}

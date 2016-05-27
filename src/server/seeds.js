@@ -1,6 +1,6 @@
 var r = require('rethinkdbdash')();
 
-
+var seedDatabase = function(){
 	r.tableCreate('students').run().then(function(result){
 		r.table('students').insert([
 			{"id": 1, name: "Shawn", needsHelp: false},
@@ -11,3 +11,5 @@ var r = require('rethinkdbdash')();
 			{"id": 6, name: "Eunice", needsHelp: false}
 		]).run()
 	})
+	return true
+}

@@ -65,6 +65,10 @@
 	
 	var _reactDom = __webpack_require__(/*! react-dom */ 39);
 	
+	var _socket = __webpack_require__(/*! socket.io-client */ 170);
+	
+	var _socket2 = _interopRequireDefault(_socket);
+	
 	var _teachers = __webpack_require__(/*! ./teachers.jsx */ 169);
 	
 	var _teachers2 = _interopRequireDefault(_teachers);
@@ -75,19 +79,14 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// export const socket = io.connect(window.location.host);
-	// export const socket2 = io('/test')
-	
-	// import io from 'socket.io-client';
-	// import Student from './student.jsx';
 	var App = _react2.default.createClass({
 		displayName: 'App',
 	
 		teacher: function teacher() {
-			(0, _reactDom.render)(_react2.default.createElement(_teachers2.default, null), document.getElementById('app'));
+			(0, _reactDom.render)(_react2.default.createElement(_teachers2.default, { socket: (0, _socket2.default)('/teacher') }), document.getElementById('app'));
 		},
 		student: function student() {
-			(0, _reactDom.render)(_react2.default.createElement(_students2.default, null), document.getElementById('app'));
+			(0, _reactDom.render)(_react2.default.createElement(_students2.default, { socket: (0, _socket2.default)('/student') }), document.getElementById('app'));
 		},
 		render: function render() {
 			return _react2.default.createElement(
@@ -20926,10 +20925,6 @@
 	
 	var _reactDom = __webpack_require__(/*! react-dom */ 39);
 	
-	var _socket = __webpack_require__(/*! socket.io-client */ 170);
-	
-	var _socket2 = _interopRequireDefault(_socket);
-	
 	var _student = __webpack_require__(/*! ./student.jsx */ 217);
 	
 	var _student2 = _interopRequireDefault(_student);
@@ -20940,7 +20935,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// var socket = io.connect(window.location.host);
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
 	exports.default = _react2.default.createClass({
 		displayName: 'teachers',
@@ -20949,19 +20944,22 @@
 			return { students: [] };
 		},
 		_updateStudents: function _updateStudents(data) {
-			console.log(data);
-			this.setState({ students: data });
-			// var index = this.state.students.findIndex(function(student){
-			// 	return student.studentName === data.value.studentName
-			// });
-			// var newState = update(this.state, {students: {[index] : {$merge: data.value}}})
-			// this.setState(newState)
+			if (!!data.length) {
+				this.setState({ students: data });
+			} else {
+				console.log(data);
+				var index = this.state.students.findIndex(function (student) {
+					return student.id === data.id;
+				});
+				var newState = (0, _reactAddonsUpdate2.default)(this.state, { students: _defineProperty({}, index, { $merge: data }) });
+				this.setState(newState);
+			}
 		},
 		componentDidMount: function componentDidMount() {
-			var socket = (0, _socket2.default)('/teacher');
-			socket.on('updateStudents', this._updateStudents);
+			this.props.socket.on('updateStudents', this._updateStudents);
 		},
 		render: function render() {
+			var socket = this.props.socket;
 			return _react2.default.createElement(
 				'div',
 				{ className: 'jumbotron' },
@@ -20989,7 +20987,7 @@
 							{ className: 'col-sm-8 col-sm-offset-2 active-students' },
 							this.state.students.map(function (student) {
 								if (student.needsHelp === true) {
-									return _react2.default.createElement(_student2.default, { key: student.id, name: student.name, needsHelp: true });
+									return _react2.default.createElement(_student2.default, { key: student.id, id: student.id, name: student.name, socket: socket, needsHelp: true });
 								}
 							})
 						)
@@ -21012,7 +21010,7 @@
 							{ className: 'col-sm-8 col-sm-offset-2 inactive-students' },
 							this.state.students.map(function (student) {
 								if (student.needsHelp === false) {
-									return _react2.default.createElement(_student2.default, { key: student.id, name: student.name, needsHelp: false });
+									return _react2.default.createElement(_student2.default, { key: student.id, id: student.id, name: student.name, socket: socket, needsHelp: false });
 								}
 							})
 						)
@@ -28607,16 +28605,15 @@
 	
 	var _reactDom = __webpack_require__(/*! react-dom */ 39);
 	
-	var _index = __webpack_require__(/*! ./index.jsx */ 1);
-	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	exports.default = _react2.default.createClass({
 		displayName: 'student',
 	
-		_toggleHelp: function _toggleHelp() {
-			_index.socket.emit('toggleHelp', this.props.name, this.props.needsHelp);
+		toggleHelp: function toggleHelp() {
+			this.props.socket.emit('solved', this.props.id);
 		},
+	
 		render: function render() {
 			return _react2.default.createElement(
 				'div',
@@ -28626,16 +28623,14 @@
 					{ className: 'text-sm-center' },
 					this.props.name
 				),
-				_react2.default.createElement(
+				this.props.needsHelp === true ? _react2.default.createElement(
 					'button',
-					{ className: 'text-sm-center', onClick: this._toggleHelp },
-					'Toggle Help'
-				)
+					{ className: 'btn btn-block btn-primary', onClick: this.toggleHelp },
+					'Complete'
+				) : null
 			);
 		}
 	});
-	// import io from 'socket.io-client';
-	// const socket = io.connect(window.location.host);
 
 /***/ },
 /* 218 */
@@ -28795,6 +28790,15 @@
 	exports.default = _react2.default.createClass({
 		displayName: 'students',
 	
+		getInitialState: function getInitialState() {
+			return { id: null };
+		},
+		handleChange: function handleChange(event) {
+			this.setState({ id: event.target.value });
+		},
+		handleClick: function handleClick() {
+			this.props.socket.emit('help', this.state.id);
+		},
 		render: function render() {
 			return _react2.default.createElement(
 				'div',
@@ -28807,12 +28811,12 @@
 				_react2.default.createElement(
 					'div',
 					{ className: 'col-sm-6 col-sm-offset-3' },
-					_react2.default.createElement('input', { className: 'form-control', onChange: this.handleChange, type: 'text' })
+					_react2.default.createElement('input', { id: 'studentId', className: 'form-control', onChange: this.handleChange, type: 'text' })
 				),
 				_react2.default.createElement(
 					'div',
 					{ className: 'col-sm-10 col-sm-offset-1' },
-					_react2.default.createElement('input', { className: 'text-sm-center btn btn-primary btn-block', type: 'submit', value: 'Help!' })
+					_react2.default.createElement('input', { onClick: this.handleClick, className: 'text-sm-center btn btn-primary btn-block', type: 'submit', value: 'Help!' })
 				)
 			);
 		}

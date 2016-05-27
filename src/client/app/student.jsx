@@ -1,19 +1,17 @@
 import React from 'react';
 import {render} from 'react-dom';
-// import io from 'socket.io-client';
-// const socket = io.connect(window.location.host);
-import {socket} from './index.jsx';
 
 export default React.createClass({
-	_toggleHelp: function() {
-		socket.emit('toggleHelp', this.props.name, this.props.needsHelp);
+	toggleHelp: function() {
+		this.props.socket.emit('solved', this.props.id);
 	},
+
 	render: function() {
 		return(
 			<div className='col-sm-3 student-card'>
 				<h5 className='text-sm-center'>{this.props.name}</h5>
-				<button className='text-sm-center' onClick={this._toggleHelp}>Toggle Help</button>
-			</div>
+				{this.props.needsHelp === true ?  <button className='btn btn-block btn-primary' onClick={this.toggleHelp}>Complete</button> : null }
+			</div> 
 		)
 	}
 })

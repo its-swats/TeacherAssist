@@ -11,9 +11,10 @@ var prepareForLaunch = function(callback){
 }
 
 var launchChangeFeed = function(callback){
-	r.table('likes').changes().run().then(function(result){
+	r.table('students').changes().run().then(function(result){
 		console.log('Connected to Change Feed');
 		result.each(function(err, row){
+			console.log(row)
 			console.log('Updating Clients...');
 			callback(row);
 		});

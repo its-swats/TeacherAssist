@@ -1,18 +1,16 @@
 import React from 'react';
 import {render} from 'react-dom';
-// import io from 'socket.io-client';
-// import Student from './student.jsx';
+import io from 'socket.io-client';
 import TeacherPanel from './teachers.jsx';
 import StudentPanel from './students.jsx';
-// export const socket = io.connect(window.location.host);
-// export const socket2 = io('/test')
+
 
 var App = React.createClass({
 	teacher: function() {
-		render(<TeacherPanel />, document.getElementById('app'));
+		render(<TeacherPanel socket={io('/teacher')} />, document.getElementById('app'));
 	},
 	student: function() {
-		render(<StudentPanel />, document.getElementById('app'));
+		render(<StudentPanel socket={io('/student')} />, document.getElementById('app'));
 	},
 	render: function() {
 		return(

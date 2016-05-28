@@ -18,6 +18,7 @@
     "bootstrap": "^4.0.0-alpha.2",
     "express": "^4.13.4",
     "react": "^15.1.0",
+    "react-addons-update": "^15.1.0",
     "react-dom": "^15.1.0",
     "rethinkdbdash": "^2.3.6",
     "socket.io": "^1.4.6",

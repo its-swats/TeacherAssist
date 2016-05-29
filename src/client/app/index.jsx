@@ -17,6 +17,7 @@ var App = React.createClass({
 		mainSocket.on('facebook', this._handleLogin)
 	},
 	_handleLogin: function(data){
+		console.log(data)
 		data.assignment === 'student' ? this.student() : this.teacher()
 	},
 	render: function() {

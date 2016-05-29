@@ -93,6 +93,7 @@
 			mainSocket.on('facebook', this._handleLogin);
 		},
 		_handleLogin: function _handleLogin(data) {
+			console.log(data);
 			data.assignment === 'student' ? this.student() : this.teacher();
 		},
 		render: function render() {

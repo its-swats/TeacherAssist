@@ -38,3 +38,4 @@ jspm_packages
 
 #db
 rethinkdb_data/
+secret.js

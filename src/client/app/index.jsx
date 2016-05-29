@@ -12,21 +12,20 @@ var App = React.createClass({
 	student: function() {
 		render(<StudentPanel socket={io('/student')} />, document.getElementById('app'));
 	},
+	componentDidMount: function(){
+		var mainSocket = io('');
+		mainSocket.on('facebook', this._handleLogin)
+	},
+	_handleLogin: function(data){
+		data.assignment === 'student' ? this.student() : this.teacher()
+	},
 	render: function() {
 		return(
 		<div className='jumbotron'>
 			<div className='container'>
 				<div className='row'>
-					<div className='col-sm-8 col-sm-offset-2 text-sm-center'>
-						<h1 className=''>Select a Role</h1>
-					</div>
-				</div>
-				<div className='row'>
-					<div className='col-sm-4 col-sm-offset-2 select-box'>
-						<button onClick={this.teacher}className="btn btn-primary btn-lg btn-block">Teacher</button>
-					</div>
-					<div className='col-sm-4 select-box'>
-						<button onClick={this.student}className="btn btn-primary btn-lg btn-block">Student</button>
+					<div className='col-sm-8 col-sm-offset-2 select-box'>
+						<a href="/auth/facebook" className="btn btn-primary"><span className="fa fa-facebook"></span>   Login with Facebook</a> 
 					</div>
 				</div>
 			</div>

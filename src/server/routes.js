@@ -1,15 +1,35 @@
 var express = require('express');
-var router = express.Router();
 var r = require('rethinkdbdash')();
 
-router.get('/initialState', function(req, res){
- r.table('likes').get(1).run().then(function(result){
-     res.json({likes: result.likeCount})
- })
-})
 
-router.get('/', function(req, res){
- res.sendFile(__dirname, 'index.html')
-})
 
-module.exports = router
+module.exports = function(app, passport,io) {
+
+	app.get('/', function(req, res){
+		res.sendFile(__dirname, 'index.html');
+	});
+
+	app.get('/auth/facebook', passport.authenticate('facebook', {scope: 'email'}));
+
+	app.get('/auth/facebook/callback', passport.authenticate('facebook', {failureRedirect: '/'}), function(req, res, next){
+		 io.emit('facebook', req.user)
+	})
+
+		// return res.json({
+			// message: 'lets see',
+		// })
+
+		
+
+		// res.redirect('/#')
+		// res.render(JSON.stringify({'how': 'aboutthis'}))
+
+
+
+};
+
+// router.get('/', function(req, res){
+//  res.sendFile(__dirname, 'index.html')
+// })
+
+// module.exports = router

@@ -3,6 +3,12 @@ var r = require('rethinkdbdash')();
 var attachSocket = function(io, activeConnections){
   var teacher = io.of('/teacher');
   var student = io.of('/student');
+  var main = io.of('/main');
+
+
+  main.on('connection', function(socket){
+    
+  });
 
   teacher.on('connection', function(socket){
     console.log('A teacher connected')

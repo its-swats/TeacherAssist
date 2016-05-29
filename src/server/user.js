@@ -4,7 +4,13 @@ var User = function() {
 		id: null,
 		token: null,
 		name: null
-	}
+    }
+	this.github = {
+        id: null,
+        token: null,
+        name: null
+    }
+    
 }
 
 module.exports = User

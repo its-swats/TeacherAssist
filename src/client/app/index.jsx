@@ -27,6 +27,7 @@ var App = React.createClass({
 				<div className='row'>
 					<div className='col-sm-8 col-sm-offset-2 select-box'>
 						<a href="/auth/facebook" className="btn btn-primary"><span className="fa fa-facebook"></span>   Login with Facebook</a> 
+						<a href="/auth/github" className="btn btn-primary"><span className="fa fa-github"></span>   Login with Github</a> 
 					</div>
 				</div>
 			</div>

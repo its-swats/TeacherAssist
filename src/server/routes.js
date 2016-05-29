@@ -22,6 +22,17 @@ module.exports = function(app, passport,io) {
 		}
 	});
 
+	app.get('/auth/github', passport.authenticate('github', {scope: 'email'}));
+
+	app.get('/auth/github/callback', passport.authenticate('github', {failureRedirect: '/'}), function(req, res, next){
+		if (req.headers.referer == 'https://github.com/') {
+			res.redirect('/')
+		} else {
+			io.emit('facebook', req.user)
+			res.status(204).end()
+		}
+	});
+
 	// app.get('/', function(req, res){
 	// 	io.emit('facebook', req.user)
 	// })

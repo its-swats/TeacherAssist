@@ -11,10 +11,20 @@ module.exports = function(app, passport,io) {
 
 	app.get('/auth/facebook', passport.authenticate('facebook', {scope: 'email'}));
 
-	app.get('/auth/facebook/callback', passport.authenticate('facebook', function(a, b, c){
-		io.emit('facebook', b)
-	}));
+	app.get('/auth/facebook/callback', passport.authenticate('facebook', {failureRedirect: '/'}), function(req, res, next){
+		if (req.headers.referer == 'https://www.facebook.com/') {
+			res.redirect('/', function(){
+				io.emit('facebook', req.user)
+			})
+		} else {
+			io.emit('facebook', req.user)
+			res.status(204).end()
+		}
+	});
 
+	// app.get('/', function(req, res){
+	// 	io.emit('facebook', req.user)
+	// })
 };
 
 // router.get('/', function(req, res){

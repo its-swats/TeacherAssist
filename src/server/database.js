@@ -6,6 +6,7 @@ var prepareForLaunch = function(callback){
 			console.log('hit one')
 			launchChangeFeed(callback)
 		} else {
+			r.tableCreate('users').run()
 			r.tableCreate('students').run().then(function(result){
 				r.table('students').insert([
 					{"id": 1, name: "Shawn", needsHelp: false},

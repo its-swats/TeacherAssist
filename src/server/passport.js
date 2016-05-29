@@ -47,7 +47,7 @@ module.exports = function(passport){
 	}, 
 	function(token, refreshToken, profile, done){
 	  process.nextTick(function(){
-	  	r.table('users').filter({'facebook': {'id': profile.id}}).run().then(function(result){
+	  	r.table('users').filter({'github': {'id': profile.id}}).run().then(function(result){
 	  		if (result.length > 0){
 	  			return done(null, result[0]);
 	  		} else {

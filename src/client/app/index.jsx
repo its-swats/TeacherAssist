@@ -25,11 +25,14 @@ var App = React.createClass({
 			</div>
 		)
 	},
+	isStudent: function() {
+		return(!!(this.state.user.assignment === 'student'))
+	},
 	teacher: function() {
-		render(<TeacherPanel socket={io('/teacher')} />, document.getElementById('app'));
+		return(<TeacherPanel socket={io('/teacher')} />);
 	},
 	student: function() {
-		render(<StudentPanel socket={io('/student')} />, document.getElementById('app'));
+		return(<StudentPanel socket={io('/student')} />);
 	},
 	logout: function(event) {
 		window.localStorage.removeItem('token')
@@ -42,11 +45,8 @@ var App = React.createClass({
 		}
 		if (!!window.localStorage.getItem('token')){
 			var info = tokenHandler.getTokenPayload(window.localStorage.getItem('token'));
-			console.log(info)
 			this.setState({user: info})
 		} 
-		var mainSocket = io('');
-		mainSocket.on('facebook', this._handleLogin)
 	},
 	_handleLogin: function(data){
 		console.log(data)

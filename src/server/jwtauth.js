@@ -9,9 +9,9 @@ module.exports = {
 	verifyToken: function(token){
 		try { 
 			var decoded = jwt.decode(token, secret.jwtKey);
-				return "Key checks out"
+				return "Key checks out";
 		} catch (err) {
-				return "Key doesn't check out"
-		}
+				return "Key doesn't check out";
+		};
 	}
 }

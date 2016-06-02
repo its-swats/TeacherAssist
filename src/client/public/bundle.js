@@ -117,11 +117,14 @@
 				)
 			);
 		},
+		isStudent: function isStudent() {
+			return !!(this.state.user.assignment === 'student');
+		},
 		teacher: function teacher() {
-			(0, _reactDom.render)(_react2.default.createElement(_teachers2.default, { socket: (0, _socket2.default)('/teacher') }), document.getElementById('app'));
+			return _react2.default.createElement(_teachers2.default, { socket: (0, _socket2.default)('/teacher') });
 		},
 		student: function student() {
-			(0, _reactDom.render)(_react2.default.createElement(_students2.default, { socket: (0, _socket2.default)('/student') }), document.getElementById('app'));
+			return _react2.default.createElement(_students2.default, { socket: (0, _socket2.default)('/student') });
 		},
 		logout: function logout(event) {
 			window.localStorage.removeItem('token');
@@ -134,11 +137,8 @@
 			}
 			if (!!window.localStorage.getItem('token')) {
 				var info = _tokenHandling2.default.getTokenPayload(window.localStorage.getItem('token'));
-				console.log(info);
 				this.setState({ user: info });
 			}
-			var mainSocket = (0, _socket2.default)('');
-			mainSocket.on('facebook', this._handleLogin);
 		},
 		_handleLogin: function _handleLogin(data) {
 			console.log(data);

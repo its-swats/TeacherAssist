@@ -1,4 +1,5 @@
 var express = require('express');
+var jwt = require('jwt-simple');
 var app = express();
 var r = require('rethinkdbdash')();
 var server = app.listen(3000, function(){console.log('listening on :3000');})
@@ -15,13 +16,14 @@ var morgan = require('morgan');
 var flash = require('connect-flash');
 
 require('./src/server/passport')(passport);
+app.set('jwtTokenSecret', 'supersecret')
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser());
 
 app.use(session({secret: 'secrets'}));
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 app.use(flash());
 require('./src/server/routes.js')(app,passport,io)
 

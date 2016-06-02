@@ -1,18 +1,51 @@
 import React from 'react';
 import {render} from 'react-dom';
 import io from 'socket.io-client';
+import tokenHandler from './helpers/tokenHandling.js';
 import TeacherPanel from './teachers.jsx';
 import StudentPanel from './students.jsx';
+import initialState from './helpers/user.js';
 
 
 var App = React.createClass({
+	getInitialState: function(){
+		// return({user: {id: '', 'assignment': '', 'github': {'picture': '', name: ''}}});
+		return({user: initialState});
+	},
+	loggedIn: function() {
+		return !!this.state.user.id
+	},
+	userPane: function() {
+		return(
+			<div className='row'>
+				<div className='col-sm-8 col-sm-offset-2'>
+					<img src={this.state.user.github.picture}></img>
+					<p>{this.state.user.github.name}</p>
+					<p>{this.state.user.assignment}</p>
+				</div>
+			</div>
+		)
+	},
 	teacher: function() {
 		render(<TeacherPanel socket={io('/teacher')} />, document.getElementById('app'));
 	},
 	student: function() {
 		render(<StudentPanel socket={io('/student')} />, document.getElementById('app'));
 	},
+	logout: function(event) {
+		window.localStorage.removeItem('token')
+		this.setState({user: initialState})
+	},
 	componentDidMount: function(){
+		if (window.location.search != "") {
+			window.localStorage.setItem('token', tokenHandler.parseToken(window.location.search))
+			history.pushState('', '', "http://" + window.location.hostname + ":" + window.location.port)
+		}
+		if (!!window.localStorage.getItem('token')){
+			var info = tokenHandler.getTokenPayload(window.localStorage.getItem('token'));
+			console.log(info)
+			this.setState({user: info.user})
+		} 
 		var mainSocket = io('');
 		mainSocket.on('facebook', this._handleLogin)
 	},
@@ -21,13 +54,15 @@ var App = React.createClass({
 		data.assignment === 'student' ? this.student() : this.teacher()
 	},
 	render: function() {
+		// debugger;
 		return(
 		<div className='jumbotron'>
 			<div className='container'>
 				<div className='row'>
 					<div className='col-sm-8 col-sm-offset-2 select-box'>
-						<a href="/auth/facebook" className="btn btn-primary"><span className="fa fa-facebook"></span>   Login with Facebook</a> 
+						{this.loggedIn() ? this.userPane() : null}
 						<a href="/auth/github" className="btn btn-primary"><span className="fa fa-github"></span>   Login with Github</a> 
+						<a onClick={this.logout} className="btn btn-primary"><span className="fa fa-github"></span>   Logout</a> 
 					</div>
 				</div>
 			</div>

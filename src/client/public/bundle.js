@@ -81,6 +81,10 @@
 	
 	var _students2 = _interopRequireDefault(_students);
 	
+	var _loginForm = __webpack_require__(/*! ./loginForm.jsx */ 223);
+	
+	var _loginForm2 = _interopRequireDefault(_loginForm);
+	
 	var _user = __webpack_require__(/*! ./helpers/user.js */ 222);
 	
 	var _user2 = _interopRequireDefault(_user);
@@ -140,10 +144,6 @@
 				this.setState({ user: info });
 			}
 		},
-		_handleLogin: function _handleLogin(data) {
-			console.log(data);
-			data.assignment === 'student' ? this.student() : this.teacher();
-		},
 		render: function render() {
 			// debugger;
 			return _react2.default.createElement(
@@ -152,27 +152,12 @@
 				_react2.default.createElement(
 					'div',
 					{ className: 'container' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'row' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-sm-8 col-sm-offset-2 select-box' },
-							this.loggedIn() ? this.userPane() : null,
-							_react2.default.createElement(
-								'a',
-								{ href: '/auth/github', className: 'btn btn-primary' },
-								_react2.default.createElement('span', { className: 'fa fa-github' }),
-								'   Login with Github'
-							),
-							_react2.default.createElement(
-								'a',
-								{ onClick: this.logout, className: 'btn btn-primary' },
-								_react2.default.createElement('span', { className: 'fa fa-github' }),
-								'   Logout'
-							)
-						)
-					)
+					this.loggedIn() ? this.state.user.assignment == 'student' ? this.student() : this.teacher() : _react2.default.createElement(_loginForm2.default, null),
+					this.loggedIn() ? _react2.default.createElement(
+						'button',
+						{ className: 'btn', onClick: this.logout },
+						'Logout'
+					) : null
 				)
 			);
 		}
@@ -28900,6 +28885,46 @@
 			profile: null
 		}
 	};
+
+/***/ },
+/* 223 */
+/*!**************************************!*\
+  !*** ./src/client/app/loginForm.jsx ***!
+  \**************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _react = __webpack_require__(/*! react */ 2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 39);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var LoginForm = _react2.default.createClass({
+		displayName: 'LoginForm',
+	
+		render: function render() {
+			return _react2.default.createElement(
+				'div',
+				{ className: 'row' },
+				_react2.default.createElement(
+					'div',
+					{ className: 'col-sm-8 col-sm-offset-2 select-box' },
+					_react2.default.createElement(
+						'a',
+						{ href: '/auth/github', className: 'btn btn-primary' },
+						_react2.default.createElement('span', { className: 'fa fa-github' }),
+						'   Login with Github'
+					)
+				)
+			);
+		}
+	});
+	
+	module.exports = LoginForm;
 
 /***/ }
 /******/ ]);

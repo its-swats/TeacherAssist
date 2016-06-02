@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import tokenHandler from './helpers/tokenHandling.js';
 import TeacherPanel from './teachers.jsx';
 import StudentPanel from './students.jsx';
+import LoginForm from './loginForm.jsx';
 import initialState from './helpers/user.js';
 
 
@@ -48,22 +49,13 @@ var App = React.createClass({
 			this.setState({user: info})
 		} 
 	},
-	_handleLogin: function(data){
-		console.log(data)
-		data.assignment === 'student' ? this.student() : this.teacher()
-	},
 	render: function() {
 		// debugger;
 		return(
 		<div className='jumbotron'>
 			<div className='container'>
-				<div className='row'>
-					<div className='col-sm-8 col-sm-offset-2 select-box'>
-						{this.loggedIn() ? this.userPane() : null}
-						<a href="/auth/github" className="btn btn-primary"><span className="fa fa-github"></span>   Login with Github</a> 
-						<a onClick={this.logout} className="btn btn-primary"><span className="fa fa-github"></span>   Logout</a> 
-					</div>
-				</div>
+				{this.loggedIn() ? (this.state.user.assignment == 'student' ? this.student() : this.teacher()) : <LoginForm />}
+				{this.loggedIn() ? <button className='btn' onClick={this.logout}>Logout</button> : null}
 			</div>
 		</div>
 		)

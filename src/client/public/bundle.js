@@ -91,7 +91,6 @@
 		displayName: 'App',
 	
 		getInitialState: function getInitialState() {
-			// return({user: {id: '', 'assignment': '', 'github': {'picture': '', name: ''}}});
 			return { user: _user2.default };
 		},
 		loggedIn: function loggedIn() {
@@ -130,13 +129,13 @@
 		},
 		componentDidMount: function componentDidMount() {
 			if (window.location.search != "") {
-				window.localStorage.setItem('token', _tokenHandling2.default.parseToken(window.location.search));
+				window.localStorage.setItem('token', window.location.search.slice(1));
 				history.pushState('', '', "http://" + window.location.hostname + ":" + window.location.port);
 			}
 			if (!!window.localStorage.getItem('token')) {
 				var info = _tokenHandling2.default.getTokenPayload(window.localStorage.getItem('token'));
 				console.log(info);
-				this.setState({ user: info.user });
+				this.setState({ user: info });
 			}
 			var mainSocket = (0, _socket2.default)('');
 			mainSocket.on('facebook', this._handleLogin);
@@ -28526,12 +28525,8 @@
 	'use strict';
 	
 	module.exports = {
-		parseToken: function parseToken(token) {
-			return token.split('.')[1];
-		},
-	
 		getTokenPayload: function getTokenPayload(token) {
-			return JSON.parse(atob(token));
+			return JSON.parse(atob(token.split('.')[1]));
 		}
 	};
 
@@ -28897,6 +28892,7 @@
 	module.exports = {
 		assignment: null,
 		id: null,
+		needsHelp: false,
 		github: {
 			id: null,
 			name: null,

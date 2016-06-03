@@ -6,12 +6,12 @@ module.exports = {
 		return jwt.encode(payload, key);
 	},
 
-	verifyToken: function(token){
+	verifyToken: function(token, callback){
 		try { 
 			var decoded = jwt.decode(token, secret.jwtKey);
-				return "Key checks out";
+				callback(decoded)
 		} catch (err) {
-				return "Key doesn't check out";
+				return err;
 		};
 	}
 }

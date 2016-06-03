@@ -1,6 +1,6 @@
 var User = function(profile, token) {
 	this.assignment = 'student';
-	this.needsHelp = 'false';
+	this.needsHelp = false;
 	this.github = {
         id: profile.id,
         token: token,

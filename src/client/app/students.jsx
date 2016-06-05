@@ -3,14 +3,8 @@ import {render} from 'react-dom';
 import io from 'socket.io-client';
 
 export default React.createClass({
-	getInitialState: function() {
-		return({id: null})
-	},
 	handleClick: function(){
-		this.props.socket.emit('help', {token: localStorage.getItem('token'), id: this.props.socket.id});
-	},
-	componentDidMount: function(){
-
+		this.props.socket.emit('help', {token: localStorage.getItem('token')});
 	},
 	render: function() {
 		return(

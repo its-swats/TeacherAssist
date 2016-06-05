@@ -89,6 +89,10 @@
 	
 	var _loginForm2 = _interopRequireDefault(_loginForm);
 	
+	var _userPane = __webpack_require__(/*! ./userPane.jsx */ 224);
+	
+	var _userPane2 = _interopRequireDefault(_userPane);
+	
 	var _user = __webpack_require__(/*! ./helpers/user.js */ 223);
 	
 	var _user2 = _interopRequireDefault(_user);
@@ -97,51 +101,13 @@
 	
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
+	var socket = void 0;
+	
 	var App = _react2.default.createClass({
 		displayName: 'App',
 	
 		getInitialState: function getInitialState() {
 			return { user: _user2.default };
-		},
-		getDefaultProps: function getDefaultProps() {
-			if (!!window.localStorage.getItem('token')) {
-				var info = _tokenHandling2.default.getTokenPayload(window.localStorage.getItem('token'));
-				return { socket: (0, _socket2.default)("/" + info.assignment) };
-			}
-		},
-		loggedIn: function loggedIn() {
-			return !!this.state.user.id;
-		},
-		userPane: function userPane() {
-			return _react2.default.createElement(
-				'div',
-				{ className: 'row' },
-				_react2.default.createElement(
-					'div',
-					{ className: 'col-sm-8 col-sm-offset-2' },
-					_react2.default.createElement('img', { src: this.state.user.github.picture }),
-					_react2.default.createElement(
-						'p',
-						null,
-						this.state.user.github.name
-					),
-					_react2.default.createElement(
-						'p',
-						null,
-						this.state.user.assignment
-					)
-				)
-			);
-		},
-		teacher: function teacher() {
-			return _react2.default.createElement(_teachers2.default, { socket: (0, _socket2.default)('/teacher') });
-		},
-		student: function student() {
-			return _react2.default.createElement(_students2.default, { socket: this.props.socket, needsHelp: this.state.user.needsHelp });
-		},
-		logout: function logout(event) {
-			window.localStorage.removeItem('token');
-			this.setState({ user: _user2.default });
 		},
 		componentDidMount: function componentDidMount() {
 			if (window.location.search != "") {
@@ -150,21 +116,31 @@
 			}
 			if (!!window.localStorage.getItem('token')) {
 				var info = _tokenHandling2.default.getTokenPayload(window.localStorage.getItem('token'));
+				socket = (0, _socket2.default)("/" + info.assignment);
 				this.setState({ user: info });
+				socket.on('updateState', this.updateState);
+				socket.on('updateToken', this.setToken);
 			}
 		},
-		componentWillReceiveProps: function componentWillReceiveProps() {
-			this.props.socket.on('updateState', this.updateState);
-			this.props.socket.on('updateToken', this.setToken);
+		loggedIn: function loggedIn() {
+			return !!this.state.user.id;
+		},
+		teacher: function teacher() {
+			return _react2.default.createElement(_teachers2.default, { socket: (0, _socket2.default)('/teacher') });
+		},
+		student: function student() {
+			return _react2.default.createElement(_students2.default, { socket: socket, needsHelp: this.state.user.needsHelp });
+		},
+		logout: function logout(event) {
+			window.localStorage.removeItem('token');
+			this.setState({ user: _user2.default });
 		},
 		updateState: function updateState(data) {
-			console.log('there');
 			this.setState((0, _reactAddonsUpdate2.default)(this.state, { user: { $merge: _defineProperty({}, data.action, data.value) } }));
 		},
 		setToken: function setToken(token) {
 			window.localStorage.setItem('token', token);
 		},
-		openSocketConnections: function openSocketConnections() {},
 		render: function render() {
 			return _react2.default.createElement(
 				'div',
@@ -172,6 +148,11 @@
 				_react2.default.createElement(
 					'div',
 					{ className: 'container' },
+					this.loggedIn() ? _react2.default.createElement(_userPane2.default, { info: this.state.user }) : _react2.default.createElement(
+						'p',
+						null,
+						'Not logged in'
+					),
 					this.loggedIn() ? this.state.user.assignment == 'student' ? this.student() : this.teacher() : _react2.default.createElement(_loginForm2.default, null),
 					this.loggedIn() ? _react2.default.createElement(
 						'button',
@@ -28853,13 +28834,9 @@
 	exports.default = _react2.default.createClass({
 		displayName: 'students',
 	
-		getInitialState: function getInitialState() {
-			return { id: null };
-		},
 		handleClick: function handleClick() {
-			this.props.socket.emit('help', { token: localStorage.getItem('token'), id: this.props.socket.id });
+			this.props.socket.emit('help', { token: localStorage.getItem('token') });
 		},
-		componentDidMount: function componentDidMount() {},
 		render: function render() {
 			return _react2.default.createElement(
 				'div',
@@ -28933,6 +28910,57 @@
 			profile: null
 		}
 	};
+
+/***/ },
+/* 224 */
+/*!*************************************!*\
+  !*** ./src/client/app/userPane.jsx ***!
+  \*************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 39);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = _react2.default.createClass({
+		displayName: 'userPane',
+	
+		// getDefaultProps: function(){
+	
+		// },
+		render: function render() {
+			// debugger;
+			return _react2.default.createElement(
+				'div',
+				{ className: 'row' },
+				_react2.default.createElement(
+					'div',
+					{ className: 'col-sm-8 col-sm-offset-2' },
+					_react2.default.createElement('img', { src: this.props.info.github.picture }),
+					_react2.default.createElement(
+						'p',
+						null,
+						this.props.info.github.name
+					),
+					_react2.default.createElement(
+						'p',
+						null,
+						this.props.info.assignment
+					)
+				)
+			);
+		}
+	});
 
 /***/ }
 /******/ ]);

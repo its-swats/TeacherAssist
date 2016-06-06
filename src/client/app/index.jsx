@@ -15,10 +15,14 @@ var App = React.createClass({
 		return({user: initialState});
 	},
 	componentDidMount: function(){
+		// Check to see if JWT Token string exists in URL bar
+		// If it does, save it to the localStorage and update the url
 		if (window.location.search != "") {
 			this.setToken(window.location.search.slice(1));
 			history.pushState('', '', "http://" + window.location.hostname + ":" + window.location.port);
 		}
+
+		// If a token is saved, parse it and connect to the appropriate socket server
 		if (!!window.localStorage.getItem('token')){
 			let info = tokenHandler.getTokenPayload(window.localStorage.getItem('token'));
 			socket = io("/"+info.assignment)
@@ -37,13 +41,16 @@ var App = React.createClass({
 		return(<StudentPanel socket={socket} needsHelp={this.state.user.needsHelp} />);
 	},
 	logout: function(event) {
+		// Delete token from local storage, and then re-render
 		window.localStorage.removeItem('token')
 		this.setState({user: initialState})
 	},
 	updateState: function(data){
+		// Function to allow for dynamic state changes
 		this.setState(update(this.state, {user: {$merge: {[data.action]: data.value}}}))
 	},
 	setToken: function(token){
+		// Save token to local storage
 		window.localStorage.setItem('token', token)
 	},
 	render: function() {

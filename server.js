@@ -9,9 +9,10 @@ var databaseSetup = require('./src/server/database.js');
 var passport = require('passport');
 var morgan = require('morgan');
 var secret = require('./secret.js')
+
+// Open socket connections for teachers and students
 var teacherSocket = io.of('/teacher');
 var studentSocket = io.of('/student');
-
 
 //Middleware
 app.use(express.static('src/client'));

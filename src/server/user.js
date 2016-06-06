@@ -1,3 +1,5 @@
+// User template for database entry creation
+
 var User = function(profile, token) {
 	this.assignment = 'student';
 	this.needsHelp = false;

@@ -3,6 +3,8 @@ import {render} from 'react-dom';
 
 export default React.createClass({
 	toggleHelp: function() {
+		// Emit an event to the server
+		// Sends the user's ID so that the server can find and update the database
 		this.props.socket.emit('solved', this.props.data.id);
 	},
 

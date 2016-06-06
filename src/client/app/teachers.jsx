@@ -9,9 +9,13 @@ export default React.createClass({
 		return({students: []})
 	},
 	_updateStudents: function(updatedStudent){
+		// If the students array is empty, place the entire student object in the state
+		// This message is received from eventsTeacher.js
+		// Otherwise, update the singular entry
 		if (!!updatedStudent.length) {
 			this.setState({students: updatedStudent})
 		} else {
+			// Find the index of the entry that needs to be updated in the state array
 			let index = this.state.students.findIndex(function(student){
 				return student.id === updatedStudent.data.id
 			});

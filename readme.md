@@ -1,27 +1,46 @@
-#RERN Boilerplate
-##What is it?
-RERN Boilerplate is a very simple boilerplate set up with:
+# Teacher Assistant
+Teacher Assistant allows students to request help from their teachers through a web browser or phone. Ideal for situations where a student may not want to raise their hand to ask for help, or situations where students are not in viewing distance of their teacher. 
 
-* RethinkDB
-* Express
-* React
-* Node
-* SocketIO
+## How does it work?
+TA functions in real time thanks to ```Sockets```, ```rethinkDB```, and ```React```. The server opens a socket with all connected users - namespaced to either ```teacher``` or ```student```. Communication is done by emitting events to the appropriate users. 
 
-It's designed to be able to quickly begin working with Rethink's changefeeds in tandem with SocketIOs event emitters. 
+When a student requests help, they emit an event with their ID. The server will then take that users ID, find it in the database, and flag it as needing help. This will fire an event in the ```RethinkDB changefeed``` - the server will pick up on the change event, and will push out the user's information to the teacher dashboard. Once the teacher dashboard receives the event, the data is updated in the React state, which causes the screen to re-render with the new help request.
 
-As users push data in to the database, RethinkDB will alert the server that a change has occurred. This will cause SocketIO to emit a broadcast to all connected clients. React will receive the broadcast, and will then process it. 
+Authentication is done using Github OAuth and JWTs. The authentication goes through ```passport-github2```, while JWTs are handled using ```simple-jwt```. Tokens are stored in the user's local storage, and are passed back to the server whenever a client emits an event. 
 
-The sample app is very simple - there is a 'like' button, and a counter. Whenever the button is pressed, the value will be incremented by 1 in the database. The new value will then be broadcast to all clients, who will then automatically update. AJAX is used to grab the initial value from the server. 
 
-##Issues? What needs to be done? 
+## Installation
+Installation is simple - install ```rethinkdb```, run ```npm install```, and create a ```secret.js``` file.
 
-There's a lot of work left to do here, but this should be enough to get a project started.
+```
+~> brew install rethinkdb
+~> npm install
+~> rethinkdb
+```
 
-* Database names and connections are currently hardcoded for localhost
-* ~~Database will need to create a table if one does not already exist~~
-* ~~On initial server launch, the table and entry will be created, but the server will need to be restarted before the changefeed will take effect~~
-* Need to implement some sort of hot-loading for changes made to the server to go with thh React hot-loading
+In the root directory, create a file called ```secret.js``` and fill in the following information:
 
-##Contributions
-If you have anything to add, please do not hesitate to fork and submit a pull request. 
+```
+var githubId = GITHUB_SECRET_HERE
+var jwtKey = JWT_SECRET_HERE
+
+module.exports.githubId = githubId;
+module.exports.jwtKey = jwtKey;
+```
+
+Finally, launch the server using
+
+```
+~> node server.js
+```
+
+## Usage
+Teachers and Students both enter through the same entry point. If not logged in, users will be prompted to create an account through Github OAuth. Once an account is created, it will be defaulted to a **student** account. 
+
+Teachers need to be manually set through the RethinkDB commandline using:
+
+```
+r.table('users').get(<USER_ID>).update({assignment: 'teacher'})
+```
+
+Once a user has logged in, they will be brought to either the Teacher or Student dashboard. Students can flag and unflag themselves as needing help, while teachers can view a realtime feed of students that have flagged themselves as needing help. Once a teacher has assisted a student, they can mark that student's request as resolved. 

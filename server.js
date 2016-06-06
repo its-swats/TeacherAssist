@@ -29,6 +29,6 @@ require('./src/server/routes.js')(app,passport,io);
 databaseSetup.prepareForLaunch({teacher: teacherSocket, student: studentSocket});
 
 //Open listen events
-studentEvents(studentSocket);
+studentEvents.events(studentSocket);
 teacherEvents(teacherSocket);
 

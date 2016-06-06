@@ -119,20 +119,22 @@
 			// If a token is saved, parse it and connect to the appropriate socket server
 			if (!!window.localStorage.getItem('token')) {
 				var info = _tokenHandling2.default.getTokenPayload(window.localStorage.getItem('token'));
-				socket = (0, _socket2.default)("/" + info.assignment);
+				socket = (0, _socket2.default)("/" + info.assignment, { 'sync disconnect on unload': true });
 				this.setState({ user: info });
 				socket.on('updateState', this.updateState);
 				socket.on('updateToken', this.setToken);
 				socket.on('teacherSolved', this.teacherSolved);
+				socket.on('test', this.test);
 				// debugger;
 			}
 		},
+		test: function test(data) {
+			console.log(data);
+		},
 		teacherSolved: function teacherSolved(data) {
 			// Switch button state when teacher resolves help request
-			if (data.id == this.state.user.id) {
-				this.setState((0, _reactAddonsUpdate2.default)(this.state, { user: { $merge: { needsHelp: false } } }));
-				this.setToken(data.token);
-			}
+			this.setState((0, _reactAddonsUpdate2.default)(this.state, { user: { $merge: { needsHelp: false } } }));
+			this.setToken(data.token);
 		},
 		loggedIn: function loggedIn() {
 			return !!this.state.user.id;

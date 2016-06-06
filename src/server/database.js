@@ -1,5 +1,6 @@
 var r = require('rethinkdbdash')();
 var tokenHandler = require('./jwtauth.js')
+var studentConnections = require('./eventsStudent.js');
 
 // Receives a 'teacher' namespaced Socket connection from server.js
 var prepareForLaunch = function(socket){
@@ -33,7 +34,8 @@ var launchChangeFeed = function(socket){
 			socket.teacher.emit('updateStudents', {data: row.new_val});
 			// Emit an event to the student to change the 'help' flag
 			if (row.old_val.needsHelp == true && row.new_val.needsHelp == false){
-				socket.student.emit('teacherSolved', {token: tokenHandler.issueToken(row.new_val), id: row.new_val.id})
+				var id = studentConnections.connections[row.new_val.id]
+				socket.student.to(id).emit('teacherSolved', {token: tokenHandler.issueToken(row.new_val), id: row.new_val.id})
 			};
 		});
 	});

@@ -24,20 +24,22 @@ var App = React.createClass({
 		// If a token is saved, parse it and connect to the appropriate socket server
 		if (!!window.localStorage.getItem('token')){
 			let info = tokenHandler.getTokenPayload(window.localStorage.getItem('token'));
-			socket = io("/"+info.assignment)
+			socket = io("/"+info.assignment, {'sync disconnect on unload': true})
 			this.setState({user: info})
 			socket.on('updateState', this.updateState)
 			socket.on('updateToken', this.setToken)
 			socket.on('teacherSolved', this.teacherSolved)
+			socket.on('test', this.test)
 			// debugger;
 		} 
 	},
+	test: function(data){
+		console.log(data);
+	},
 	teacherSolved: function(data){
 		// Switch button state when teacher resolves help request
-		if (data.id == this.state.user.id) {
-			this.setState(update(this.state, {user: {$merge: {needsHelp: false}}}))
-			this.setToken(data.token)
-		}
+		this.setState(update(this.state, {user: {$merge: {needsHelp: false}}}))
+		this.setToken(data.token)
 	},
 	loggedIn: function() {
 		return !!this.state.user.id

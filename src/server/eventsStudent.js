@@ -1,14 +1,16 @@
 var r = require('rethinkdbdash')();
 var tokenHandler = require('./jwtauth.js')
-var studentConnections = []
+var studentConnections = {}
 
-module.exports = function(student){
+module.exports.events = function(student){  
   student.on('connection', function(socket){
     console.log('A student connected');
-    // Listen for a student 'help' event
+    // Associate all socket IDs with User IDs on connection
+    // Used for socket-io to speak directly with a specific client
     socket.on('addToConnections', function(userId){
-      studentConnections.push({[userId]: socket.id})
+      studentConnections[[userId]] = socket.id
     });
+    // Listen for a student 'help' event
     socket.on('help', function(data){
       // Verify that the user is legitimate by checking their JWT
       tokenHandler.verifyToken(data.token, function(token){
@@ -24,7 +26,17 @@ module.exports = function(student){
       });
     });
     socket.on('disconnect', function(socket){
-      // need to remove dead connections from connections array
+      // need to remove dead connections from connections object
+      // console.log(socket)
+      // for (var i in studentConnections){
+      //   if (studentConnections[i] == socket.id) {
+      //     console.log(i)
+      //     delete studentConnections[i]
+      //   }
+      // }
+      
     });
   });
 };
+
+module.exports.connections = studentConnections

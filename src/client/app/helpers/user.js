@@ -1,4 +1,5 @@
 module.exports = {
+		// Blank user object for use with setting initial state
 		assignment: null,
 		id: null,
 		needsHelp: false,

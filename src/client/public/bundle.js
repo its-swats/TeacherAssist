@@ -110,10 +110,14 @@
 			return { user: _user2.default };
 		},
 		componentDidMount: function componentDidMount() {
+			// Check to see if JWT Token string exists in URL bar
+			// If it does, save it to the localStorage and update the url
 			if (window.location.search != "") {
 				this.setToken(window.location.search.slice(1));
 				history.pushState('', '', "http://" + window.location.hostname + ":" + window.location.port);
 			}
+	
+			// If a token is saved, parse it and connect to the appropriate socket server
 			if (!!window.localStorage.getItem('token')) {
 				var info = _tokenHandling2.default.getTokenPayload(window.localStorage.getItem('token'));
 				socket = (0, _socket2.default)("/" + info.assignment);
@@ -132,13 +136,16 @@
 			return _react2.default.createElement(_students2.default, { socket: socket, needsHelp: this.state.user.needsHelp });
 		},
 		logout: function logout(event) {
+			// Delete token from local storage, and then re-render
 			window.localStorage.removeItem('token');
 			this.setState({ user: _user2.default });
 		},
 		updateState: function updateState(data) {
+			// Function to allow for dynamic state changes
 			this.setState((0, _reactAddonsUpdate2.default)(this.state, { user: { $merge: _defineProperty({}, data.action, data.value) } }));
 		},
 		setToken: function setToken(token) {
+			// Save token to local storage
 			window.localStorage.setItem('token', token);
 		},
 		render: function render() {
@@ -28641,6 +28648,7 @@
 	'use strict';
 	
 	module.exports = {
+		// Retrieves and decode JWT, returns JSON with values
 		getTokenPayload: function getTokenPayload(token) {
 			return JSON.parse(atob(token.split('.')[1]));
 		}
@@ -28684,9 +28692,13 @@
 			return { students: [] };
 		},
 		_updateStudents: function _updateStudents(updatedStudent) {
+			// If the students array is empty, place the entire student object in the state
+			// This message is received from eventsTeacher.js
+			// Otherwise, update the singular entry
 			if (!!updatedStudent.length) {
 				this.setState({ students: updatedStudent });
 			} else {
+				// Find the index of the entry that needs to be updated in the state array
 				var index = this.state.students.findIndex(function (student) {
 					return student.id === updatedStudent.data.id;
 				});
@@ -28784,6 +28796,8 @@
 		displayName: 'student',
 	
 		toggleHelp: function toggleHelp() {
+			// Emit an event to the server
+			// Sends the user's ID so that the server can find and update the database
 			this.props.socket.emit('solved', this.props.data.id);
 		},
 	
@@ -28834,6 +28848,9 @@
 		displayName: 'students',
 	
 		handleClick: function handleClick() {
+			// Send help event and token to the server
+			// Help event will reverse the user's needsHelp value
+			// Token is passed in to verify user identity
 			this.props.socket.emit('help', { token: localStorage.getItem('token') });
 		},
 		render: function render() {
@@ -28899,15 +28916,16 @@
 	"use strict";
 	
 	module.exports = {
-		assignment: null,
-		id: null,
-		needsHelp: false,
-		github: {
+			// Blank user object for use with setting initial state
+			assignment: null,
 			id: null,
-			name: null,
-			picture: null,
-			profile: null
-		}
+			needsHelp: false,
+			github: {
+					id: null,
+					name: null,
+					picture: null,
+					profile: null
+			}
 	};
 
 /***/ },
@@ -28934,11 +28952,7 @@
 	exports.default = _react2.default.createClass({
 		displayName: 'userPane',
 	
-		// getDefaultProps: function(){
-	
-		// },
 		render: function render() {
-			// debugger;
 			return _react2.default.createElement(
 				'div',
 				{ className: 'row' },

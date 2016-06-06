@@ -4,6 +4,9 @@ import io from 'socket.io-client';
 
 export default React.createClass({
 	handleClick: function(){
+		// Send help event and token to the server
+		// Help event will reverse the user's needsHelp value
+		// Token is passed in to verify user identity
 		this.props.socket.emit('help', {token: localStorage.getItem('token')});
 	},
 	render: function() {

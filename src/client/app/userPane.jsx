@@ -2,11 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 
 export default React.createClass({
-	// getDefaultProps: function(){
-
-	// },
 	render: function(){
-		// debugger;
 		return(
 			<div className='row'>
 				<div className='col-sm-8 col-sm-offset-2'>

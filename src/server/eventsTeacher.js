@@ -1,16 +1,14 @@
 var r = require('rethinkdbdash')();
 
-module.exports = function(io){
-  var teacher = io.of('/teacher');
-
+module.exports = function(teacher){
   teacher.on('connection', function(socket){
     console.log('A teacher connected')
-    r.table('students').run().then(function(result){
+    r.table('users').filter({assignment: 'student'}).run().then(function(result){
       teacher.emit('updateStudents', result);
     });
 
     socket.on('solved', function(msg){
-      r.table('students').get(parseInt(msg)).update({needsHelp: false}).run().then(function(res){
+      r.table('users').get(msg).update({needsHelp: false}).run().then(function(res){
         console.log('Student Flag Updated to False')
       });
     });

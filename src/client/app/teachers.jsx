@@ -8,15 +8,14 @@ export default React.createClass({
 	getInitialState: function() {
 		return({students: []})
 	},
-	_updateStudents: function(data){
-		if (!!data.length) {
-			this.setState({students: data})
+	_updateStudents: function(updatedStudent){
+		if (!!updatedStudent.length) {
+			this.setState({students: updatedStudent})
 		} else {
-			console.log(data)
-			var index = this.state.students.findIndex(function(student){
-				return student.id === data.id
+			let index = this.state.students.findIndex(function(student){
+				return student.id === updatedStudent.data.id
 			});
-			var newState = update(this.state, {students: {[index] : {$merge: data}}})
+			var newState = update(this.state, {students: {[index] : {$merge: updatedStudent.data}}})
 			this.setState(newState)
 		}
 	},
@@ -37,7 +36,7 @@ export default React.createClass({
 					<div className='col-sm-8 col-sm-offset-2 active-students'>
 						{this.state.students.map(function(student){
 							if (student.needsHelp === true) {
-								return(<Student key={student.id} id={student.id} name={student.name} socket={socket} needsHelp={true} />)
+								return(<Student key={student.id} data={student} socket={socket} needsHelp={true} />)
 							}
 						})}
 					</div>
@@ -50,7 +49,7 @@ export default React.createClass({
 					<div className='col-sm-8 col-sm-offset-2 inactive-students'>
 						{this.state.students.map(function(student){
 							if (student.needsHelp === false) {
-								return(<Student key={student.id} id={student.id} name={student.name} socket={socket} needsHelp={false} />)
+								return(<Student key={student.id} data={student} socket={socket} needsHelp={false} />)
 							}
 						})}
 					</div>

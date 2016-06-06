@@ -9,6 +9,9 @@ var databaseSetup = require('./src/server/database.js');
 var passport = require('passport');
 var morgan = require('morgan');
 var secret = require('./secret.js')
+var teacherSocket = io.of('/teacher');
+var studentSocket = io.of('/student');
+
 
 //Middleware
 app.use(express.static('src/client'));
@@ -22,10 +25,10 @@ require('./src/server/routes.js')(app,passport,io);
 
 
 //Set up database and begin watching changefeed
-databaseSetup.prepareForLaunch();
+databaseSetup.prepareForLaunch(teacherSocket);
 
 //Open listen events for teachers and students
-studentEvents(io);
-teacherEvents(io);
+studentEvents(studentSocket);
+teacherEvents(teacherSocket);
 
 

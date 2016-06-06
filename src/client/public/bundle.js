@@ -126,7 +126,7 @@
 			return !!this.state.user.id;
 		},
 		teacher: function teacher() {
-			return _react2.default.createElement(_teachers2.default, { socket: (0, _socket2.default)('/teacher') });
+			return _react2.default.createElement(_teachers2.default, { socket: socket });
 		},
 		student: function student() {
 			return _react2.default.createElement(_students2.default, { socket: socket, needsHelp: this.state.user.needsHelp });
@@ -28683,15 +28683,14 @@
 		getInitialState: function getInitialState() {
 			return { students: [] };
 		},
-		_updateStudents: function _updateStudents(data) {
-			if (!!data.length) {
-				this.setState({ students: data });
+		_updateStudents: function _updateStudents(updatedStudent) {
+			if (!!updatedStudent.length) {
+				this.setState({ students: updatedStudent });
 			} else {
-				console.log(data);
 				var index = this.state.students.findIndex(function (student) {
-					return student.id === data.id;
+					return student.id === updatedStudent.data.id;
 				});
-				var newState = (0, _reactAddonsUpdate2.default)(this.state, { students: _defineProperty({}, index, { $merge: data }) });
+				var newState = (0, _reactAddonsUpdate2.default)(this.state, { students: _defineProperty({}, index, { $merge: updatedStudent.data }) });
 				this.setState(newState);
 			}
 		},
@@ -28727,7 +28726,7 @@
 							{ className: 'col-sm-8 col-sm-offset-2 active-students' },
 							this.state.students.map(function (student) {
 								if (student.needsHelp === true) {
-									return _react2.default.createElement(_student2.default, { key: student.id, id: student.id, name: student.name, socket: socket, needsHelp: true });
+									return _react2.default.createElement(_student2.default, { key: student.id, data: student, socket: socket, needsHelp: true });
 								}
 							})
 						)
@@ -28750,7 +28749,7 @@
 							{ className: 'col-sm-8 col-sm-offset-2 inactive-students' },
 							this.state.students.map(function (student) {
 								if (student.needsHelp === false) {
-									return _react2.default.createElement(_student2.default, { key: student.id, id: student.id, name: student.name, socket: socket, needsHelp: false });
+									return _react2.default.createElement(_student2.default, { key: student.id, data: student, socket: socket, needsHelp: false });
 								}
 							})
 						)
@@ -28785,7 +28784,7 @@
 		displayName: 'student',
 	
 		toggleHelp: function toggleHelp() {
-			this.props.socket.emit('solved', this.props.id);
+			this.props.socket.emit('solved', this.props.data.id);
 		},
 	
 		render: function render() {
@@ -28795,7 +28794,7 @@
 				_react2.default.createElement(
 					'h5',
 					{ className: 'text-sm-center' },
-					this.props.name
+					this.props.data.github.name
 				),
 				this.props.needsHelp === true ? _react2.default.createElement(
 					'button',

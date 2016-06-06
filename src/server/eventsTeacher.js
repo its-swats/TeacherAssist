@@ -1,4 +1,5 @@
 var r = require('rethinkdbdash')();
+var tokenHandler = require('./jwtauth.js')
 
 module.exports = function(teacher){
   teacher.on('connection', function(socket){
@@ -8,10 +9,12 @@ module.exports = function(teacher){
       teacher.emit('updateStudents', result);
     });
 
-    socket.on('solved', function(msg){
-      // When a teacher marks a student as solved, update database
-      r.table('users').get(msg).update({needsHelp: false}).run().then(function(res){
-        console.log('Student Flag Updated to False')
+    socket.on('solved', function(data){
+      // When a teacher marks a student as solved, update database after checking jwt
+      tokenHandler.verifyToken(data.token, function(token){
+        r.table('users').get(data.id).update({needsHelp: false}).run().then(function(res){
+          console.log('Student Flag Updated to False')
+        });
       });
     });
   });

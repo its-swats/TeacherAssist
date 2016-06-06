@@ -116,7 +116,6 @@
 				this.setToken(window.location.search.slice(1));
 				history.pushState('', '', "http://" + window.location.hostname + ":" + window.location.port);
 			}
-	
 			// If a token is saved, parse it and connect to the appropriate socket server
 			if (!!window.localStorage.getItem('token')) {
 				var info = _tokenHandling2.default.getTokenPayload(window.localStorage.getItem('token'));
@@ -124,6 +123,15 @@
 				this.setState({ user: info });
 				socket.on('updateState', this.updateState);
 				socket.on('updateToken', this.setToken);
+				socket.on('teacherSolved', this.teacherSolved);
+				// debugger;
+			}
+		},
+		teacherSolved: function teacherSolved(data) {
+			// Switch button state when teacher resolves help request
+			if (data.id == this.state.user.id) {
+				this.setState((0, _reactAddonsUpdate2.default)(this.state, { user: { $merge: { needsHelp: false } } }));
+				this.setToken(data.token);
 			}
 		},
 		loggedIn: function loggedIn() {
@@ -133,7 +141,7 @@
 			return _react2.default.createElement(_teachers2.default, { socket: socket });
 		},
 		student: function student() {
-			return _react2.default.createElement(_students2.default, { socket: socket, needsHelp: this.state.user.needsHelp });
+			return _react2.default.createElement(_students2.default, { socket: socket, id: this.state.user.id, needsHelp: this.state.user.needsHelp });
 		},
 		logout: function logout(event) {
 			// Delete token from local storage, and then re-render
@@ -28798,7 +28806,7 @@
 		toggleHelp: function toggleHelp() {
 			// Emit an event to the server
 			// Sends the user's ID so that the server can find and update the database
-			this.props.socket.emit('solved', this.props.data.id);
+			this.props.socket.emit('solved', { token: localStorage.getItem('token'), id: this.props.data.id });
 		},
 	
 		render: function render() {
@@ -28853,14 +28861,18 @@
 			// Token is passed in to verify user identity
 			this.props.socket.emit('help', { token: localStorage.getItem('token') });
 		},
+		componentDidMount: function componentDidMount() {
+			this.props.socket.emit('addToConnections', this.props.id);
+		},
 		render: function render() {
+			console.log(this.props.needsHelp);
 			return _react2.default.createElement(
 				'div',
 				{ className: 'col-sm-2 col-sm-offset-5 login-box' },
 				_react2.default.createElement(
 					'div',
 					{ className: 'col-sm-10 col-sm-offset-1' },
-					_react2.default.createElement('input', { onClick: this.handleClick, className: "text-sm-center btn " + (this.props.needsHelp == true ? 'btn-primary' : 'btn-danger') + ' btn-block', type: 'submit', value: 'Help!' })
+					_react2.default.createElement('input', { onClick: this.handleClick, className: "text-sm-center btn " + (this.props.needsHelp == true ? 'btn-danger' : 'btn-primary') + ' btn-block', type: 'submit', value: 'Help!' })
 				)
 			);
 		}

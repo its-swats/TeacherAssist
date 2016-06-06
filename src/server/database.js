@@ -1,33 +1,30 @@
 var r = require('rethinkdbdash')();
 
-var prepareForLaunch = function(){
+var prepareForLaunch = function(teacher){
 	r.tableList().run().then(function(result){
 		
 		if (result.length > 0) {
-			launchChangeFeed()
+			launchChangeFeed(teacher)
 		} else {
-			r.tableCreate('users').run()
-			r.tableCreate('students').run().then(function(result){
-				r.table('students').insert([
-					{"id": 1, name: "Shawn", needsHelp: false},
-					{"id": 2, name: "Ryan", needsHelp: false},
-					{"id": 3, name: "Hunter", needsHelp: false},
-					{"id": 4, name: "Nadia", needsHelp: false},
-					{"id": 5, name: "Roz", needsHelp: false},
-					{"id": 6, name: "Eunice", needsHelp: false}
-					]).run().then(function(){
-						launchChangeFeed();
-					});
-			});
+			r.tableCreate('users').run().then(function(result){
+				r.table('users').insert([
+					{"assignment": "student", "needsHelp": false, "github":{"id": 1, "name": "Roz", "picture":"https://avatars.githubusercontent.com/u/12677746", "profile": "http://www.google.com"}},
+					{"assignment": "student", "needsHelp": false, "github":{"id": 2, "name": "Hunter", "picture":"https://avatars.githubusercontent.com/u/12677746", "profile": "http://www.google.com"}},
+					{"assignment": "student", "needsHelp": false, "github":{"id": 3, "name": "Ryan", "picture":"https://avatars.githubusercontent.com/u/12677746", "profile": "http://www.google.com"}},
+					{"assignment": "student", "needsHelp": false, "github":{"id": 4, "name": "Nadia", "picture":"https://avatars.githubusercontent.com/u/12677746", "profile": "http://www.google.com"}}
+				]).run().then(function(){
+					launchChangeFeed(teacher);
+				})
+			})
 		}
 	});
 }
 
-var launchChangeFeed = function(){
-	r.table('students').changes().run().then(function(result){
+var launchChangeFeed = function(teacher){
+	r.table('users').filter({"assignment": "student"}).changes().run().then(function(result){
 		console.log('Connected to Change Feed');
 		result.each(function(err, row){
-			teacher.emit('updateStudents', {id: row.new_val.id, needsHelp: row.new_val.needsHelp});
+			teacher.emit('updateStudents', {data: row.new_val});
 		});
 	});
 }

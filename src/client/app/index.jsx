@@ -31,7 +31,7 @@ var App = React.createClass({
 		return !!this.state.user.id
 	},
 	teacher: function() {
-		return(<TeacherPanel socket={io('/teacher')} />);
+		return(<TeacherPanel socket={socket} />);
 	},
 	student: function() {
 		return(<StudentPanel socket={socket} needsHelp={this.state.user.needsHelp} />);

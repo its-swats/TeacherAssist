@@ -2,9 +2,9 @@ var jwt = require ('jwt-simple')
 var secret = require('../../secret.js');
 
 module.exports = {
-	issueToken: function(payload, key){
+	issueToken: function(payload){
 		// Creates a JWT using the payload and secret key
-		return jwt.encode(payload, key);
+		return jwt.encode(payload, secret.jwtKey);
 	},
 
 	verifyToken: function(token, callback){

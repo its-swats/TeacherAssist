@@ -9,11 +9,15 @@ export default React.createClass({
 		// Token is passed in to verify user identity
 		this.props.socket.emit('help', {token: localStorage.getItem('token')});
 	},
+	componentDidMount: function(){
+		this.props.socket.emit('addToConnections', this.props.id)
+	},
 	render: function() {
+		console.log(this.props.needsHelp)
 		return(
 			<div className='col-sm-2 col-sm-offset-5 login-box'>
 				<div className='col-sm-10 col-sm-offset-1'>
-					<input onClick={this.handleClick} className={"text-sm-center btn " + (this.props.needsHelp == true ? 'btn-primary' : 'btn-danger') + ' btn-block'} type='submit' value='Help!' />
+					<input onClick={this.handleClick} className={"text-sm-center btn " + (this.props.needsHelp == true ? 'btn-danger' : 'btn-primary') + ' btn-block'} type='submit' value='Help!' />
 				</div>
 			</div>
 		)

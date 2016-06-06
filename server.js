@@ -26,10 +26,9 @@ require('./src/server/routes.js')(app,passport,io);
 
 
 //Set up database and begin watching changefeed
-databaseSetup.prepareForLaunch(teacherSocket);
+databaseSetup.prepareForLaunch({teacher: teacherSocket, student: studentSocket});
 
-//Open listen events for teachers and students
-studentEvents(studentSocket);
+//Open listen events
+studentEvents.events(studentSocket);
 teacherEvents(teacherSocket);
-
 

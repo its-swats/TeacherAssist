@@ -21,15 +21,25 @@ var App = React.createClass({
 			this.setToken(window.location.search.slice(1));
 			history.pushState('', '', "http://" + window.location.hostname + ":" + window.location.port);
 		}
-
 		// If a token is saved, parse it and connect to the appropriate socket server
 		if (!!window.localStorage.getItem('token')){
 			let info = tokenHandler.getTokenPayload(window.localStorage.getItem('token'));
-			socket = io("/"+info.assignment)
+			socket = io("/"+info.assignment, {'sync disconnect on unload': true})
 			this.setState({user: info})
 			socket.on('updateState', this.updateState)
 			socket.on('updateToken', this.setToken)
+			socket.on('teacherSolved', this.teacherSolved)
+			socket.on('test', this.test)
+			// debugger;
 		} 
+	},
+	test: function(data){
+		console.log(data);
+	},
+	teacherSolved: function(data){
+		// Switch button state when teacher resolves help request
+		this.setState(update(this.state, {user: {$merge: {needsHelp: false}}}))
+		this.setToken(data.token)
 	},
 	loggedIn: function() {
 		return !!this.state.user.id
@@ -38,7 +48,7 @@ var App = React.createClass({
 		return(<TeacherPanel socket={socket} />);
 	},
 	student: function() {
-		return(<StudentPanel socket={socket} needsHelp={this.state.user.needsHelp} />);
+		return(<StudentPanel socket={socket} id={this.state.user.id} needsHelp={this.state.user.needsHelp} />);
 	},
 	logout: function(event) {
 		// Delete token from local storage, and then re-render

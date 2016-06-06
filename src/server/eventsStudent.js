@@ -1,9 +1,15 @@
 var r = require('rethinkdbdash')();
 var tokenHandler = require('./jwtauth.js')
-var secret = require('../../secret.js')
+var studentConnections = {}
 
-module.exports = function(student){
+module.exports.events = function(student){  
   student.on('connection', function(socket){
+    console.log('A student connected');
+    // Associate all socket IDs with User IDs on connection
+    // Used for socket-io to speak directly with a specific client
+    socket.on('addToConnections', function(userId){
+      studentConnections[[userId]] = socket.id
+    });
     // Listen for a student 'help' event
     socket.on('help', function(data){
       // Verify that the user is legitimate by checking their JWT
@@ -13,11 +19,24 @@ module.exports = function(student){
         // Renews the user's JWT as well
       	r.table('users').get(token.id).update({needsHelp: r.row('needsHelp').not()}).run().then(function(res){     
       		r.table('users').get(token.id).run().then(function(res){
-      			socket.emit('updateState', {action: 'needsHelp', value: res.needsHelp})
-      			socket.emit('updateToken', tokenHandler.issueToken(res, secret.jwtKey))
-      		})
-      	})
-      })
+      			socket.emit('updateState', {action: 'needsHelp', value: res.needsHelp});
+      			socket.emit('updateToken', tokenHandler.issueToken(res));
+      		});
+      	});
+      });
+    });
+    socket.on('disconnect', function(socket){
+      // need to remove dead connections from connections object
+      // console.log(socket)
+      // for (var i in studentConnections){
+      //   if (studentConnections[i] == socket.id) {
+      //     console.log(i)
+      //     delete studentConnections[i]
+      //   }
+      // }
+      
     });
   });
 };
+
+module.exports.connections = studentConnections

@@ -89,11 +89,11 @@
 	
 	var _loginForm2 = _interopRequireDefault(_loginForm);
 	
-	var _userPane = __webpack_require__(/*! ./userPane.jsx */ 224);
+	var _userPane = __webpack_require__(/*! ./userPane.jsx */ 223);
 	
 	var _userPane2 = _interopRequireDefault(_userPane);
 	
-	var _user = __webpack_require__(/*! ./helpers/user.js */ 223);
+	var _user = __webpack_require__(/*! ./helpers/user.js */ 224);
 	
 	var _user2 = _interopRequireDefault(_user);
 	
@@ -28922,28 +28922,6 @@
 
 /***/ },
 /* 223 */
-/*!****************************************!*\
-  !*** ./src/client/app/helpers/user.js ***!
-  \****************************************/
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	module.exports = {
-			// Blank user object for use with setting initial state
-			assignment: null,
-			id: null,
-			needsHelp: false,
-			github: {
-					id: null,
-					name: null,
-					picture: null,
-					profile: null
-			}
-	};
-
-/***/ },
-/* 224 */
 /*!*************************************!*\
   !*** ./src/client/app/userPane.jsx ***!
   \*************************************/
@@ -28988,6 +28966,28 @@
 			);
 		}
 	});
+
+/***/ },
+/* 224 */
+/*!****************************************!*\
+  !*** ./src/client/app/helpers/user.js ***!
+  \****************************************/
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	module.exports = {
+			// Blank user object for use with setting initial state
+			assignment: null,
+			id: null,
+			needsHelp: false,
+			github: {
+					id: null,
+					name: null,
+					picture: null,
+					profile: null
+			}
+	};
 
 /***/ }
 /******/ ]);

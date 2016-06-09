@@ -1,5 +1,5 @@
 {
-  "name": "Teacher Assistant",
+  "name": "TeacherAssistant",
   "version": "0.0.1",
   "description": "Real time student/teacher help feed",
   "main": "index.js",

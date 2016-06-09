@@ -25,17 +25,6 @@ module.exports.events = function(student){
       	});
       });
     });
-    socket.on('disconnect', function(socket){
-      // need to remove dead connections from connections object
-      // console.log(socket)
-      // for (var i in studentConnections){
-      //   if (studentConnections[i] == socket.id) {
-      //     console.log(i)
-      //     delete studentConnections[i]
-      //   }
-      // }
-      
-    });
   });
 };
 

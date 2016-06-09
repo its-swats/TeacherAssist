@@ -8,6 +8,17 @@ When a student requests help, they emit an event with their ID. The server will 
 
 Authentication is done using Github OAuth and JWTs. The authentication goes through ```passport-github2```, while JWTs are handled using ```simple-jwt```. Tokens are stored in the user's local storage, and are passed back to the server whenever a client emits an event. 
 
+## Project Status - June 8, 2016
+The backend is is fully functional. Both users and teachers can register to submit and resolve help requests. The frontend is a work in progress, and while functional, will be significantly changed. 
+
+
+## Planned Updates
+* Full overhaul of the frontend UI and workflow.
+* Student and Teacher metrics.
+* Authentication systems besides github - FB, Google, and classic local signup.
+* Allow teachers to send out messages to their class. 
+* A plugin system to allow teachers to choose which features they want to use.
+
 
 ## Installation
 Installation is simple - install ```rethinkdb```, run ```npm install```, and create a ```secret.js``` file.
